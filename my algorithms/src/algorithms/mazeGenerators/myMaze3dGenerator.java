@@ -1,16 +1,21 @@
 package algorithms.mazeGenerators;
 
 import java.util.ArrayList;
-import java.util.Random;
-import algorithms.*;
 
+/**
+ * myMaze3dGenerator extend the Maze3dGenerator class
+ * create a 3Dmaze via DFS algorithm.
+ */
 public class myMaze3dGenerator extends Maze3dGenerator {
 
 	private Maze3d maze3d;
-	private Position startPosition;
-	private Position endposition;
+	//private Position startPosition;
+	//private Position endposition;
 	
-	
+	/**
+	 * choose a random position only in odd position in all 3 factors
+	 * @return Position
+	 */
 	private Position chooseRandomPosition(){
 		// choose an even cloumn
 		int x = Utils.random.nextInt(maze3d.getCols());
@@ -24,7 +29,9 @@ public class myMaze3dGenerator extends Maze3dGenerator {
 			z = Utils.random.nextInt(maze3d.getFloor());
 		return new Position(x, y, z);
 	}
-	
+/**
+ * Generate a 3Dmaze via DFS 
+ */
 	public Maze3d generate (int cols, int raws, int floors){
 		maze3d = new Maze3d(cols, raws, floors);
 		for(int i=0 ; i < maze3d.getFloor()  ; i++){
@@ -42,14 +49,20 @@ public class myMaze3dGenerator extends Maze3dGenerator {
 		DFS(startPosition);
 		//choose end Position
 		Position endposition = chooseRandomPosition();
-		while(maze3d.getValue(endposition.x, endposition.y, endposition.z)==maze3d.FREE)
-			endposition = chooseRandomPosition();
+		int Temp = maze3d.getValue(endposition.x, endposition.y, endposition.z);
+		while (Temp != maze3d.FREE || endposition.equals(startPosition)){
+			 endposition = chooseRandomPosition();
+			 Temp = maze3d.getValue(endposition.x, endposition.y, endposition.z);
+		}
+		//maze3d.setFree(endposition.x, endposition.y, endposition.z);
 		maze3d.setGoalPosition(endposition);
-		
 		return maze3d;
 	}
 	
-	
+	/**
+	 * DFS Maze generator Algorithm
+	 * @param currPos
+	 */
 	private void DFS(Position currPos){
 		//Find all Possible Directions
 		ArrayList<Direction> dirs = getPossibleDirections(currPos);
@@ -108,7 +121,11 @@ public class myMaze3dGenerator extends Maze3dGenerator {
 			}
 		}
 	}
-	
+	/**
+	 * get all possible Directions from the current position
+	 * @param currPos
+	 * @return ArrayList of Directions 
+	 */
 	private ArrayList<Direction> getPossibleDirections(Position currPos){
 		ArrayList<Direction> directions = new ArrayList<Direction>();
 		if (currPos.x +2 < maze3d.getCols() && maze3d.getValue(currPos.x+2, currPos.y, currPos.z)==Maze3d.WALL)

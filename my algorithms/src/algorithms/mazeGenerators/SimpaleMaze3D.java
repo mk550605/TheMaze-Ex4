@@ -1,7 +1,17 @@
 package algorithms.mazeGenerators;
-
+/**
+ * maze3D simple generator
+ * randomize all the maze.
+ * randomize the start and goal positions
+ * and carve the way to the Goal
+ * @author Michael Kratik
+ * @version 1.0
+ *
+ */
 public class SimpaleMaze3D extends Maze3dGenerator {
-
+/**
+ * Simple Maze3D generator
+ */
 	@Override
 	public Maze3d generate(int cols, int raws, int floors) {
 		Maze3d theMaze = new Maze3d(cols, raws, floors);
@@ -53,7 +63,12 @@ public class SimpaleMaze3D extends Maze3dGenerator {
 		
 		return theMaze;
 	}
-
+/**
+ * randomize 3 parameters in the Range of the cols, rows,floors 
+ * and return a position
+ * @param theMaze
+ * @return position
+ */
 	private Position randomizePosition(Maze3d theMaze){
 		int x =Utils.random.nextInt(theMaze.getCols());
 		int y = Utils.random.nextInt(theMaze.getRows());
