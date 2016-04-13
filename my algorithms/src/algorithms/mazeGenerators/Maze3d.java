@@ -1,6 +1,7 @@
 package algorithms.mazeGenerators;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 /**
  *
  * this Maze 3d class explain how to build a maze in 3 Dimantions.
@@ -9,6 +10,8 @@ import java.util.ArrayList;
  * 
  */
 public class Maze3d {
+	
+	
 	private int cols;
 	private int rows;
 	private int floor;
@@ -233,11 +236,54 @@ public byte[] toByteArray(){
 
 	// to be fill 
 	public Maze3d(byte[] b) {
-		for (int e =0 ; e < b.length ; e++){
-			
+		int counter ;
+		this.cols = (int)b[0];
+		this.rows = (int)b[1];
+		this.floor =  (int)b[2];
+		this.maze = new int[cols][rows][floor];
+		Position sPos = new Position((int)b[3], (int)b[4], (int)b[5]);
+		this.setStartPosition(sPos);
+		Position gPos = new Position((int)b[6], (int)b[7], (int)b[8]);
+		this.setGoalPosition(gPos);
+		for (counter = 9; counter < b.length ; counter++){
+			for (int k =0 ; k < floor; k++){
+				for (int i = 0; i < rows; i++) {
+					for (int j = 0; j < cols; j++) {
+						this.maze[j][i][k] = b[counter];
+						counter++;
+					}
+				}
+			}
 		}
 
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (getClass() != obj.getClass())
+			return false;
+		Maze3d other = (Maze3d) obj;
+		if (cols != other.cols)
+			return false;
+		if (rows != other.rows)
+			return false;
+		if (floor != other.floor)
+			return false;
+		if (!endPosition.equals(other.endPosition))
+			return false;
+		if (!startPosition.equals(other.startPosition))
+			return false;
+		for (int k =0 ; k < floor; k++){
+			for (int i = 0; i < rows; i++) {
+				for (int j = 0; j < cols; j++) {
+					if (maze[j][i][k] != other.maze[j][i][k])
+						return false;
+				}
+			}
+		}
+		return true;
+	}
+
 
 }
 
