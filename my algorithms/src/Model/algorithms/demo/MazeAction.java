@@ -1,7 +1,7 @@
-package algorithms.demo;
+package Model.algorithms.demo;
 
-import algorithms.Search.Action;
-import algorithms.mazeGenerators.Direction;
+import Model.algorithms.Search.Action;
+import Model.algorithms.mazeGenerators.Direction;
 /**
  * 
  * @author Michael Kratik

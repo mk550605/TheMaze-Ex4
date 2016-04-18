@@ -1,4 +1,4 @@
-package algorithms.mazeGenerators;
+package Model.algorithms.mazeGenerators;
 /**
  * define a Position in the Maze Domain
  * @author Michael Kratik

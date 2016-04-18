@@ -1,26 +1,30 @@
-package algorithms.demo;
+package Model.algorithms.demo;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import IO.MyCompressorOutputStream;
-import IO.MyDecompressorInputStream;
-import algorithms.Search.BestFS;
-import algorithms.Search.BreadthFS;
-import algorithms.Search.DFS;
-import algorithms.Search.Solution;
-import algorithms.mazeGenerators.Maze3d;
-import algorithms.mazeGenerators.Maze3dGenerator;
-import algorithms.mazeGenerators.SimpaleMaze3D;
-import algorithms.mazeGenerators.myMaze3dGenerator;
+import Model.IO.MyCompressorOutputStream;
+import Model.IO.MyDecompressorInputStream;
+import Model.algorithms.Search.BestFS;
+import Model.algorithms.Search.BreadthFS;
+import Model.algorithms.Search.DFS;
+import Model.algorithms.Search.Solution;
+import Model.algorithms.mazeGenerators.Maze3d;
+import Model.algorithms.mazeGenerators.Maze3dGenerator;
+import Model.algorithms.mazeGenerators.SimpaleMaze3D;
+import Model.algorithms.mazeGenerators.myMaze3dGenerator;
 
 public class Demo {
+	/**
+	 * Demo for all Project , test the maze creation , MazeAdapter, BFS *2 ,DFS and File Handeling.
+	 * @param mg - MazeGenerator 
+	 * @throws Exception - i/o
+	 */
 	public static void testMazeGenerator(Maze3dGenerator mg) throws Exception{
-		int cols =3 , raws =3 , floor =3;
+		int cols =11 , raws =11 , floor =11;
 	Maze3d maze=mg.generate(cols, raws, floor);
-	
 	// get the maze entrance
 	System.out.println("maze start pos is : " + maze.getStartPosition()); // format "{x,y,z}"
 	System.out.println("maze Goal Pos is : " + maze.getGoalPosition());

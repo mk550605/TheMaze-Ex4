@@ -1,4 +1,4 @@
-package algorithms.Search;
+package Model.algorithms.Search;
 
 
 import java.util.HashMap;

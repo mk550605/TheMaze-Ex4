@@ -1,4 +1,4 @@
-package algorithms.Search;
+package Model.algorithms.Search;
 /**
  * Define a State of Searcher 
  * @author Michael Kratik

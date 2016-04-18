@@ -1,4 +1,4 @@
-package IO;
+package Model.IO;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,8 +20,9 @@ public class MyDecompressorInputStream extends InputStream {
 		byte data;
 		while ((data = (byte) in.read())!=-1){
 			count = in.read();
-			if (counter == 0)
+			if (counter == 0){
 				count--;
+			}
 			for(int i=0 ; i<count;i++){
 				byteArray[counter] = data;
 				counter++;

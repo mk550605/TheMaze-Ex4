@@ -1,4 +1,4 @@
-package algorithms.Search;
+package Model.algorithms.Search;
 /**
  * Interface describe the searcher functions
  * @author Michael Kratik

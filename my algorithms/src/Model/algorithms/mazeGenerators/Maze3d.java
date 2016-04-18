@@ -1,4 +1,4 @@
-package algorithms.mazeGenerators;
+package Model.algorithms.mazeGenerators;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -208,7 +208,10 @@ public Direction[] getPossibleMovesDirectionarray(Position p) {
 	directions.toArray(arr);
 	return arr;
 }
-
+/**
+ * compress the maze to Byte Array for smaller pack transaction or save.
+ * @return byte Array of the Maze
+ */
 public byte[] toByteArray(){
 	ArrayList<Byte> byteArrayList = new ArrayList<Byte>();
 	byteArrayList.add((byte)cols);
@@ -234,7 +237,10 @@ public byte[] toByteArray(){
 	return byteArray;
 }
 
-	// to be fill 
+	/**
+	 * Constructor to Maze From ByteArray 
+	 * @param b - byteArray of the maze
+	 */
 	public Maze3d(byte[] b) {
 		int counter ;
 		this.cols = (int)b[0];
@@ -258,6 +264,9 @@ public byte[] toByteArray(){
 
 	}
 	
+	/**
+	 * Equals Override for Maze
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (getClass() != obj.getClass())

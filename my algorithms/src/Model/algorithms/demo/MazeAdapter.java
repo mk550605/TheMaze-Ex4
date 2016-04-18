@@ -1,13 +1,13 @@
-package algorithms.demo;
+package Model.algorithms.demo;
 
 import java.util.HashMap;
 
-import algorithms.Search.Action;
-import algorithms.Search.Searchable;
-import algorithms.Search.State;
-import algorithms.mazeGenerators.Direction;
-import algorithms.mazeGenerators.Maze3d;
-import algorithms.mazeGenerators.Position;
+import Model.algorithms.Search.Action;
+import Model.algorithms.Search.Searchable;
+import Model.algorithms.Search.State;
+import Model.algorithms.mazeGenerators.Direction;
+import Model.algorithms.mazeGenerators.Maze3d;
+import Model.algorithms.mazeGenerators.Position;
 /**
  * 
  * @author Michael Kratik

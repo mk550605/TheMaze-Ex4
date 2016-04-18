@@ -1,4 +1,4 @@
-package algorithms.mazeGenerators;
+package Model.algorithms.mazeGenerators;
 /**
  *
  * Enum forDirections moves in the maze

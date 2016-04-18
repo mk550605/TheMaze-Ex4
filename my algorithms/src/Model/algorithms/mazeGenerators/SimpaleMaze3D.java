@@ -1,4 +1,4 @@
-package algorithms.mazeGenerators;
+package Model.algorithms.mazeGenerators;
 /**
  * maze3D simple generator
  * randomize all the maze.

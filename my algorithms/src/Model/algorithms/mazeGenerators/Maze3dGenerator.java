@@ -1,4 +1,4 @@
-package algorithms.mazeGenerators;
+package Model.algorithms.mazeGenerators;
 
 /**
  * abstract class that implements the Maze3dGenerator_Interface 

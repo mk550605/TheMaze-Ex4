@@ -1,16 +1,17 @@
-package algorithms.Search;
+package Model.algorithms.Search;
+
+
 import java.util.HashMap;
 import java.util.Map.Entry;
 /**
- * 
- * Searcher algorithm via Best first search
+ * Searcher algorithm via Breadth first search
  * @author Michael Kratik
  * @version 1.0
  */
-public class BestFS extends CommonSearcher {
+public class BreadthFS extends CommonSearcher {
 	/**
 	 * This function finds a solution to a searchable problem
-	 * with Best First Search 
+	 * with Breadth First Search 
 	 * @param s the problem
 	 * @return solution
 	 */
@@ -23,33 +24,30 @@ public class BestFS extends CommonSearcher {
 			stepCounter++;
 			closedList.add(state);
 			
-			if (state.equals(s.getGoalState()))
+			if (state.equals(s.getGoalState())) 
 				return backtrace(state);
 			
 			HashMap<Action , State> successors = s.getAllPossibleStates(state);
 			for (Entry<Action, State> entry: successors.entrySet()) {
-				Action action = entry.getKey();
+				//Action action = entry.getKey();
 				State successor = entry.getValue();
 				
 				if (!openList.contains(successor) && !closedList.contains(successor)){
 					successor.setCameFrom(state);
-					successor.setCost(state.getCost() + action.getCost());
-					
+					successor.setCost(state.getCost() + 1); 
 					openList.add(successor);
 				}
 				else
 				{
-					if (successor.getCost() > state.getCost()+action.getCost()){
+					if (successor.getCost() > state.getCost()+1){
 						successor.setCameFrom(state);
-						successor.setCost(state.getCost()+action.getCost());
+						successor.setCost(state.getCost()+1);
 						if (!openList.contains(successor)){
-							 
 							openList.add(successor);
 						}
 						else
 						{
-							openList.remove(successor);
-							
+							openList.remove(successor); 
 							openList.add(successor);
 						}
 					}
@@ -58,10 +56,8 @@ public class BestFS extends CommonSearcher {
 					
 			}
 		}
-		
 		return null;  // Never Used
 	}
 
-	
 
 }

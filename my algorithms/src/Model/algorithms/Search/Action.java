@@ -1,4 +1,4 @@
-package algorithms.Search;
+package Model.algorithms.Search;
 /**
  * define a Action in searcher domain
  * @author Michael Kratik

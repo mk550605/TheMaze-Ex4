@@ -1,6 +1,6 @@
-package algorithms.demo;
+package Model.algorithms.demo;
 
-import algorithms.mazeGenerators.myMaze3dGenerator;
+import Model.algorithms.mazeGenerators.myMaze3dGenerator;
 
 public class run {
 

@@ -1,4 +1,4 @@
-package algorithms.mazeGenerators;
+package Model.algorithms.mazeGenerators;
 /**
  * Interface define two method for maze 3D Generation
  * @author Michael Kratik

@@ -1,7 +1,7 @@
-package algorithms.demo;
+package Model.algorithms.demo;
 
-import algorithms.Search.State;
-import algorithms.mazeGenerators.Position;
+import Model.algorithms.Search.State;
+import Model.algorithms.mazeGenerators.Position;
 /**
  * the Class Provide the connection between the Global State to the States in the State in the Maze Problem.
  * have one Object of Position
