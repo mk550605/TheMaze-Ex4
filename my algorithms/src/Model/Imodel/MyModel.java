@@ -1,23 +1,35 @@
 package Model.Imodel;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import Model.IO.MyCompressorOutputStream;
 import Model.IO.MyDecompressorInputStream;
+import Model.algorithms.Search.BestFS;
+import Model.algorithms.Search.BreadthFS;
+import Model.algorithms.Search.DFS;
+import Model.algorithms.Search.Searcher;
+import Model.algorithms.Search.Solution;
+import Model.algorithms.demo.MazeAdapter;
 import Model.algorithms.mazeGenerators.Maze3d;
 import Model.algorithms.mazeGenerators.myMaze3dGenerator;
+
 import controller.Controller;
+
 import java.lang.instrument.Instrumentation;
 
 
 public class MyModel implements Model {
+	private static final int BYTEARRAYSIZE = 10000;
 	private Controller thecontroller;
 	private ConcurrentHashMap<String, Maze3d> maze3dDB;
+	private ConcurrentHashMap<String, Solution> mazeSol; 
     private static Instrumentation instrumentation;
 
 	
@@ -86,15 +98,34 @@ public class MyModel implements Model {
 	}
 
 	@Override
-	public void loadFromFile(String name, String fileName) {
+	public void loadFromFile(String name, String fileName) throws IOException {
 		try {
-			InputStream in = new MyDecompressorInputStream(new FileInputStream("1.maz"));
-			byte b[]=new byte[maze.toByteArray().length];                        //            How to know how big the array should be?
+			InputStream in = new MyDecompressorInputStream(new FileInputStream(fileName));
+			byte b[]=new byte[BYTEARRAYSIZE];//            How to know how big the array should be?
+			Arrays.fill( b, (byte) -1 );
 			in.read(b);
 			in.close();
-			Maze3d theMaze=new Maze3d(b);
+			int pointer = BYTEARRAYSIZE/2;
+			for (int i=0; i<BYTEARRAYSIZE;i++){
+				if (!(b[pointer] ==-1)){
+					pointer++;
+				}
+				else{
+					pointer--;
+					if (!(b[pointer] ==-1)){
+						break;
+				}
+			}
+			}
+				byte c[]=new byte[pointer];
+				for(int i=0; i<pointer;i++){
+					c[i]= b[i];
+				}
+			
+			Maze3d theMaze=new Maze3d(c);
 			maze3dDB.put(name, theMaze);
-		} catch (FileNotFoundException e) {
+		}
+		 catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -108,16 +139,44 @@ public class MyModel implements Model {
 		return instrumentation.getObjectSize(theMaze);
 	}
 
-	@Override
-	public long getFileSize(String fileName) {
-	
-		return 0;
-	}
+
 
 	@Override
 	public String getSolution(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return mazeSol.get(name).toString();
+	}
+
+	@Override
+	public double getMazeSizeinFile(String name) throws IOException {
+		saveToFile(name, "test.maz");
+		File file =new File("test.maz");
+		double bytes = 0;
+		if(file.exists()){
+			bytes = file.length();
+		}
+		else{
+				 System.out.println("File does not exists!");
+		}
+		return bytes;
+	}
+
+	@Override
+	public void solveMaze(String name, String theSearcher) {
+		Maze3d theMaze = maze3dDB.get(name);
+		MazeAdapter myAdapter = new MazeAdapter(theMaze);
+		Searcher ser;
+		Solution sol;
+		if (theSearcher=="bestfs"){
+			ser = new BestFS();
+		}
+		else if(theSearcher=="breadthfs"){
+			ser = new BreadthFS();
+			}
+		else{
+			ser = new DFS();
+		}
+		sol = ser.search(myAdapter);
+		mazeSol.put(name, sol);
 	}
 
 

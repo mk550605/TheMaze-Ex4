@@ -41,6 +41,7 @@ public class Cli extends MyView{
 						if (split[i].charAt(0)=='<'){
 							split[i] = split[i].replace("<","");
 							split[i] = split[i].replace(">", "");
+							split[i]= split[i].toLowerCase();
 							argu[j]=split[i];
 							j++;
 						}

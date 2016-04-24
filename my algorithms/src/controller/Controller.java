@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import Model.Imodel.Model;
@@ -10,6 +11,6 @@ public interface Controller {
 	public void setModel(Model model);
 	public void setView (View view);
 	public HashMap<String, Command> getCommandSet();
-	public void handleUserCommand(String cmd, String[] args);
-
+	public void handleUserCommand(String cmd, String[] args ,  Model model) throws IOException;
+	public void handleUserCommand(String cmd, String[] args ) throws IOException;
 }

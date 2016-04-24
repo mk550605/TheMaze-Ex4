@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import Model.Imodel.Model;
@@ -40,10 +41,17 @@ public class MyController implements Controller{
 	public HashMap<String, Command> getCommandSet(){
 		return commands;
 	}
-	public void handleUserCommand(String cmd, String[] args) {
+	public void handleUserCommand(String cmd, String[] args , Model model) throws IOException {
 		Command command = commands.get(cmd);
-		command.doCommand(args);
-	}	
+		command.doCommand(args , model);
+	}
+
+	@Override
+	public void handleUserCommand(String cmd, String[] args) throws IOException {
+		handleUserCommand(cmd, args, model);
+	}
+
+
 	
 
 	
