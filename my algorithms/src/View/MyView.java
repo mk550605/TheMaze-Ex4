@@ -23,7 +23,7 @@ public class MyView implements View{
 
 
 	@Override
-	public void print(String textToPrint) {
+	public void print(Object textToPrint) {
 		System.out.println(textToPrint);
 		
 	}

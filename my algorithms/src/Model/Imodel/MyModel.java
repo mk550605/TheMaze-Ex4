@@ -22,7 +22,7 @@ import Model.algorithms.mazeGenerators.myMaze3dGenerator;
 
 import controller.Controller;
 
-import java.lang.instrument.Instrumentation;
+
 
 
 public class MyModel implements Model {
@@ -30,7 +30,7 @@ public class MyModel implements Model {
 	private Controller thecontroller;
 	private ConcurrentHashMap<String, Maze3d> maze3dDB = new ConcurrentHashMap<String, Maze3d>();
 	private ConcurrentHashMap<String, Solution> mazeSol = new ConcurrentHashMap<String, Solution>(); 
-    private static Instrumentation instrumentation;
+
 
 	
 	public MyModel(Controller c) {
@@ -140,9 +140,8 @@ public class MyModel implements Model {
 	@Override
 	public long getMazeSize(String name) {
 		Maze3d theMaze = maze3dDB.get(name);
-		return instrumentation.getObjectSize(theMaze);
+		return ObjectSizeFetcher.getObjectSize(theMaze);
 	}
-
 
 
 	@Override
@@ -158,9 +157,7 @@ public class MyModel implements Model {
 		if(file.exists()){
 			bytes = file.length();
 		}
-		else{
-				 System.out.println("File does not exists!");
-		}
+		file.delete();
 		return bytes;
 	}
 
