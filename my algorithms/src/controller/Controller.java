@@ -11,6 +11,6 @@ public interface Controller {
 	public void setModel(Model model);
 	public void setView (View view);
 	public HashMap<String, Command> getCommandSet();
-	public void handleUserCommand(String cmd, String[] args ,  Model model) throws IOException;
+	public void handleUserCommand(String cmd, String[] args ,  Model model , View view) throws IOException;
 	public void handleUserCommand(String cmd, String[] args ) throws IOException;
 }

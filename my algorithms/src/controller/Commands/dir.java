@@ -3,6 +3,7 @@ package controller.Commands;
 import java.io.File;
 
 import Model.Imodel.Model;
+import View.View;
 import controller.Command;
 
 public class dir implements Command{
@@ -10,7 +11,7 @@ public class dir implements Command{
 
 
 	@Override
-	public void doCommand(String[] args , Model model) {
+	public void doCommand(String[] args , Model model  ,View view) {
 		File f = null;
 	      File[] paths;
 	      

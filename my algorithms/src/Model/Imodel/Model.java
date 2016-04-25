@@ -6,7 +6,7 @@ import Model.algorithms.Search.Searcher;
 import Model.algorithms.Search.Solution;
 
 public interface Model {
-	public void generateMaze(String name , int cols , int rows , int floors);
+	public void generateMaze(String name , int cols , int rows , int floors) throws Exception;
 	public String displayMaze3D(String name);
 	public int[][] displayCrossSectionByX(int x,String name);
 	public int[][] displayCrossSectionByY(int x,String name);

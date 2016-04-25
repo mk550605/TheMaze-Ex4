@@ -7,5 +7,5 @@ import controller.Command;
 
 public interface View {
 	void startView() throws IOException;
-
+	void print(String textToPrint);
 }

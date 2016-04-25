@@ -34,7 +34,7 @@ public class Cli extends MyView{
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-					String[] argu= new String[2];
+					String[] argu= new String[4];
 					StringBuilder command=new StringBuilder();
 					String[] split=line.split(" ");
 					for (int j =0 ,i =0;i<split.length;i++) {
@@ -46,6 +46,7 @@ public class Cli extends MyView{
 							j++;
 						}
 						else {
+							command.append(" ");
 							command.append(split[i]);
 						}
 						
@@ -53,7 +54,13 @@ public class Cli extends MyView{
 					}
 					//Command com=commandsSet.get(command);
 					//com.doCommand(argu);
+					command.deleteCharAt(0);
+					try{
 					controller.handleUserCommand(command.toString(), argu);
+					}catch (Exception e){
+						e.printStackTrace();
+					}
+					
 					argu=null;
 					
 				

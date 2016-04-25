@@ -22,5 +22,12 @@ public class MyView implements View{
 	}
 
 
+	@Override
+	public void print(String textToPrint) {
+		System.out.println(textToPrint);
+		
+	}
+
+
 
 }

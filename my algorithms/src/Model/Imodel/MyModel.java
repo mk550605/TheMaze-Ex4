@@ -28,8 +28,8 @@ import java.lang.instrument.Instrumentation;
 public class MyModel implements Model {
 	private static final int BYTEARRAYSIZE = 10000;
 	private Controller thecontroller;
-	private ConcurrentHashMap<String, Maze3d> maze3dDB;
-	private ConcurrentHashMap<String, Solution> mazeSol; 
+	private ConcurrentHashMap<String, Maze3d> maze3dDB = new ConcurrentHashMap<String, Maze3d>();
+	private ConcurrentHashMap<String, Solution> mazeSol = new ConcurrentHashMap<String, Solution>(); 
     private static Instrumentation instrumentation;
 
 	
@@ -38,10 +38,14 @@ public class MyModel implements Model {
 	}
 	
 	@Override
-	public void generateMaze(String name , int cols , int rows , int floors){
+	public void generateMaze(String name , int cols , int rows , int floors) throws Exception{
 		myMaze3dGenerator mg = new myMaze3dGenerator();
+		try{
 		Maze3d theMaze = mg.generate(cols, rows, floors);
 		maze3dDB.put(name, theMaze);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	@Override
