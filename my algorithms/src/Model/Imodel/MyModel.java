@@ -55,13 +55,15 @@ public class MyModel implements Model {
 	 */
 	@Override
 	public void generateMaze(String name , int cols , int rows , int floors) throws Exception{
-		myMaze3dGenerator mg = new myMaze3dGenerator();
-		try{
-		Maze3d theMaze = mg.generate(cols, rows, floors);
-		maze3dDB.put(name, theMaze);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+		
+				myMaze3dGenerator mg = new myMaze3dGenerator();
+				try{
+				Maze3d theMaze = mg.generate(cols, rows, floors);
+				maze3dDB.put(name, theMaze);
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+		
 	}
 /**
  * Printing the maze
@@ -203,21 +205,24 @@ public class MyModel implements Model {
 
 	@Override
 	public void solveMaze(String name, String theSearcher) {
-		Maze3d theMaze = maze3dDB.get(name);
-		MazeAdapter myAdapter = new MazeAdapter(theMaze);
-		Searcher ser;
-		Solution sol;
-		if (theSearcher=="bestfs"){
-			ser = new BestFS();
-		}
-		else if(theSearcher=="breadthfs"){
-			ser = new BreadthFS();
-			}
-		else{
-			ser = new DFS();
-		}
-		sol = ser.search(myAdapter);
-		mazeSol.put(name, sol);
+
+				Maze3d theMaze = maze3dDB.get(name);
+				MazeAdapter myAdapter = new MazeAdapter(theMaze);
+				Searcher ser;
+				Solution sol;
+				if (theSearcher=="bestfs"){
+					ser = new BestFS();
+				}
+				else if(theSearcher=="breadthfs"){
+					ser = new BreadthFS();
+					}
+				else{
+					ser = new DFS();
+				}
+				sol = ser.search(myAdapter);
+				mazeSol.put(name, sol);
+			
+		
 	}
 
 

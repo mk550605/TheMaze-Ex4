@@ -7,7 +7,7 @@ import View.View;
 import controller.Command;
 
 public class exit implements Command {
-
+Boolean	ThraedClosed =false; 
 
 private String Exit(){
 	return " the Program Finished";
@@ -15,8 +15,11 @@ private String Exit(){
 
 @Override
 public void doCommand(String[] args, Model model ,View view) throws IOException {
+	//while (!ThraedClosed){
+		
+		
+//	}
 	Exit();
-	
 }
 
 }

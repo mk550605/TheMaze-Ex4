@@ -22,9 +22,7 @@ public class Cli extends MyView{
 	}
 	
 	public void start(){
-		Thread thread = new Thread(new Runnable() {
-			
-			@Override
+		Thread cliThread = new Thread(new Runnable() {
 			public void run() {
 				String line= "1";
 				while(!line.equals("exit")) {
@@ -84,14 +82,8 @@ public class Cli extends MyView{
 			} 
 				out.close();
 			}
+			}
+		});
+			cliThread.start();	
 		}
-					
-			
-		});	
-		thread.run();
-	}
-	
-	
-	
-
 }

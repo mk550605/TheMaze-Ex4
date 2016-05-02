@@ -10,9 +10,13 @@ public class solve implements Command {
 
 	@Override
 	public void doCommand(String[] args, Model model ,View view) throws IOException {
+		Thread SolverThread = new Thread(new Runnable() {
+			public void run() {
+				model.solveMaze(args[0],args[1]);
+			}
+		});
 		
-		model.solveMaze(args[0],args[1]);
-		
+		SolverThread.start();
 	}
 
 

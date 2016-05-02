@@ -26,12 +26,12 @@ public class dir implements Command{
 	         for(File path:paths)
 	         {
 	            // prints file and directory paths
-	            System.out.println(path);
+	            view.print(path);
 	         }
 	      }catch(Exception e){
 	         // if any error occurs
 	        
-	         System.out.println("\nNo sach Directory, please try again\n");
+	        view.print("\nNo sach Directory, please try again\n");
 	      }
 		
 	}

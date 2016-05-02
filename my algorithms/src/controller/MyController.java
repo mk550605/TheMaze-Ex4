@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import Model.Imodel.Model;
-import Model.Imodel.MyModel;
-import View.Cli;
 import View.View;
 import controller.Commands.*;
 import controller.Commands.Error;
@@ -29,7 +27,6 @@ public class MyController implements Controller{
 		commands.put("solve", new solve());
 		commands.put("display solution", new display_solution());
 		commands.put("exit", new exit());
-		commands.put("Error", new Error());
 	}
 	
 	public void setModel(Model model) {
