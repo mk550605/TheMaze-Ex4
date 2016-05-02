@@ -21,63 +21,77 @@ public class Cli extends MyView{
 		this.commandsSet= controller.getCommandSet();
 	}
 	
-	
-	public void startView() throws IOException {
-		String line= "1";
-			while(!line.equals("exit")) {
-				System.out.println("\n");
-				for(String str: commandsSet.keySet())
-					System.out.println("* " + str);
-				System.out.println("\nEnter command");
-				try {
-					line=in.readLine();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-					String[] argu= new String[4];
-					StringBuilder command=new StringBuilder();
-					String[] split=line.split(" ");
-					for (int j =0 ,i =0;i<split.length;i++) {
-						if (split[i].charAt(0)=='<'){
-							split[i] = split[i].replace("<","");
-							split[i] = split[i].replace(">", "");
-							split[i]= split[i].toLowerCase();
-							argu[j]=split[i];
-							j++;
-						}
-						else {
-							command.append(" ");
-							command.append(split[i]);
-						}
-						
-						
-					}
-					//Command com=commandsSet.get(command);
-					//com.doCommand(argu);
-					command.deleteCharAt(0);
-					try{
-					controller.handleUserCommand(command.toString(), argu);
-					}catch (Exception e){
+	public void start(){
+		Thread thread = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String line= "1";
+				while(!line.equals("exit")) {
+					System.out.println("\n");
+					for(String str: commandsSet.keySet())
+						System.out.println("* " + str);
+					System.out.println("\nEnter command");
+					try {
+						line=in.readLine();
+					} catch (IOException e) {
 						e.printStackTrace();
 					}
+						String[] argu= new String[4];
+						StringBuilder command=new StringBuilder();
+						String[] split=line.split(" ");
+						for (int j =0 ,i =0;i<split.length;i++) {
+							if (split[i].startsWith("<")){
+								split[i] = split[i].replace("<","");
+								split[i] = split[i].replace(">", "");
+								split[i]= split[i].toLowerCase();
+								argu[j]=split[i];
+								j++;
+							}
+							else {
+								command.append(" ");
+								command.append(split[i]);
+							}
+							
+							
+						}
 					
-					argu=null;
-					
+						command.deleteCharAt(0);
+						try{
+						controller.handleUserCommand(command.toString(), argu);
+						}catch (Exception e){
+							e.printStackTrace();
+						}
+						
+						argu=null;
+						
+						
+					}
+					out.write("The Program closed Good Bye");
+					try {
+						in.close();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					out.close();
 				
-					
-				}
-				out.write("The Program closed Good Bye");
-				in.close();
-				out.close();
 			
-		
-		{ try {
-			in.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 
-			out.close();
+			{ try {
+				in.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} 
+				out.close();
+			}
 		}
+					
+			
+		});	
+		thread.run();
 	}
 	
+	
+	
+
 }

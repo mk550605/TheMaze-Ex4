@@ -24,7 +24,13 @@ import controller.Controller;
 
 
 
-
+/**
+ * Class Define all the Project Functionality available on the maze3d system logic 
+ * @author Michael Kratik
+ * @version 1.3
+ * 
+ *
+ */
 public class MyModel implements Model {
 	private static final int BYTEARRAYSIZE = 10000;
 	private Controller thecontroller;
@@ -32,11 +38,21 @@ public class MyModel implements Model {
 	private ConcurrentHashMap<String, Solution> mazeSol = new ConcurrentHashMap<String, Solution>(); 
 
 
-	
+	/**
+	 * initialize the model
+	 * @param c - thecontroller
+	 */
 	public MyModel(Controller c) {
 		this.thecontroller=c;
 	}
-	
+	/**
+	 * Generate a 3D maze with myMaze3dGenerator algoritem
+	 * @param name - name of the maze
+	 * @param cols - num of cols 
+	 * @param rows - num of rows
+	 * @param floors -num of floors
+	 * @throws Exception
+	 */
 	@Override
 	public void generateMaze(String name , int cols , int rows , int floors) throws Exception{
 		myMaze3dGenerator mg = new myMaze3dGenerator();
@@ -47,13 +63,22 @@ public class MyModel implements Model {
 			e.printStackTrace();
 		}
 	}
-
+/**
+ * Printing the maze
+ * @param name - name of the maze
+ * @return - String of the maze
+ */
 	@Override
 	public String displayMaze3D(String name) {
 		Maze3d theMaze = maze3dDB.get(name);
 		return theMaze.toString();
 	}
-
+/**
+ * display the cross section by X definition on the selected col with maze name
+ * @param x - definition of maze
+ * @param name - maze name
+ * @return - two definition array
+ */
 	@Override
 	public int[][] displayCrossSectionByX(int x , String name) {
 		Maze3d theMaze = maze3dDB.get(name);
@@ -65,7 +90,12 @@ public class MyModel implements Model {
 		}
 		return null;	
 	}
-
+	/**
+	 * display the cross section by Y definition on the selected col with maze name
+	 * @param x - definition of maze
+	 * @param name - maze name
+	 * @return - two definition array
+	 */
 	@Override
 	public int[][] displayCrossSectionByY(int x, String name) {
 		Maze3d theMaze = maze3dDB.get(name);
@@ -78,7 +108,12 @@ public class MyModel implements Model {
 		return null;
 	}
 	
-
+	/**
+	 * display the cross section by Z definition on the selected col with maze name
+	 * @param x - definition of maze
+	 * @param name - maze name
+	 * @return - two definition array
+	 */
 	@Override
 	public int[][] displayCrossSectionByZ(int x, String name) {
 		Maze3d theMaze = maze3dDB.get(name);
@@ -90,7 +125,12 @@ public class MyModel implements Model {
 		}
 		return null;	
 	}
-
+/**
+ * save the maze with the name to file with filename 
+ * @param name - name of the maze
+ * @param fileName - name of the file
+ * @throws IOException
+ */
 	@Override
 	public void saveToFile(String name, String fileName) throws IOException {
 		Maze3d theMaze = maze3dDB.get(name);
@@ -181,9 +221,5 @@ public class MyModel implements Model {
 	}
 
 
-	
-	
-	
-	
 
 }

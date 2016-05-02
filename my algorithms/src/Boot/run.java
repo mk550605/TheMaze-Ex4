@@ -22,7 +22,7 @@ public class run {
 		View view =  new Cli(new BufferedReader(new InputStreamReader(System.in)), new PrintWriter(System.out),c);
 		c.setModel(m);
 		c.setView(view);
-		view.startView();
+		view.start();
 	}
 
 }

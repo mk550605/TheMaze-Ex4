@@ -16,7 +16,7 @@ public class MyView implements View{
 
 
 	@Override
-	public void startView() throws IOException {
+	public void start() throws IOException {
 	
 		
 	}

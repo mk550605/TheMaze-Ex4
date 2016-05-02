@@ -6,6 +6,6 @@ import java.util.HashMap;
 import controller.Command;
 
 public interface View {
-	void startView() throws IOException;
+	void start() throws IOException;
 	void print(Object textToPrint);
 }

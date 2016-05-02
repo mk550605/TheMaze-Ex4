@@ -45,7 +45,6 @@ public class MyController implements Controller{
 		return commands;
 	}
 	public void handleUserCommand(String cmd, String[] args , Model model , View view) throws IOException {
-		//Command command1 = commands.;
 		Command command = new Error();
 		for (Entry<String, Command> e : commands.entrySet()) {
 			if (e.getKey().startsWith(cmd)){
