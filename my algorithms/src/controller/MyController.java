@@ -43,12 +43,14 @@ public class MyController implements Controller{
 	}
 	public void handleUserCommand(String cmd, String[] args , Model model , View view) throws IOException {
 		Command command = new Error();
-		for (Entry<String, Command> e : commands.entrySet()) {
-			if (e.getKey().startsWith(cmd)){
-				command = e.getValue();
-				break;
+		if(!cmd.equals("")){
+			for (Entry<String, Command> e : commands.entrySet()) {
+				if (e.getKey().startsWith(cmd)){
+					command = e.getValue();
+					break;
+				}
+				   //add to my result list
 			}
-			   //add to my result list
 		}
 		command.doCommand(args , model , view);
 	}

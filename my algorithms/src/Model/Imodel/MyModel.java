@@ -172,7 +172,6 @@ public class MyModel implements Model {
 			maze3dDB.put(name, theMaze);
 		}
 		 catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -182,7 +181,11 @@ public class MyModel implements Model {
 	@Override
 	public long getMazeSize(String name) {
 		Maze3d theMaze = maze3dDB.get(name);
-		return ObjectSizeFetcher.getObjectSize(theMaze);
+		int size = theMaze.getCols() * theMaze.getRows();
+		size = size * theMaze.getFloor();
+		size = size + 9;
+		size = size * 4;
+		return size;
 	}
 
 

@@ -35,16 +35,18 @@ public class Cli extends MyView{
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-						String[] argu= new String[4];
+						StringBuilder argusb= new StringBuilder();
 						StringBuilder command=new StringBuilder();
 						String[] split=line.split(" ");
-						for (int j =0 ,i =0;i<split.length;i++) {
+						int j=0;
+						for (int i =0;i<split.length;i++) {
 							if (split[i].startsWith("<")){
 								split[i] = split[i].replace("<","");
 								split[i] = split[i].replace(">", "");
 								split[i]= split[i].toLowerCase();
-								argu[j]=split[i];
-								j++;
+								argusb.append(split[i]);
+								argusb.append(" ");
+								
 							}
 							else {
 								command.append(" ");
@@ -53,16 +55,14 @@ public class Cli extends MyView{
 							
 							
 						}
-					
 						command.deleteCharAt(0);
 						try{
-						controller.handleUserCommand(command.toString(), argu);
+						controller.handleUserCommand(command.toString(),argusb.toString().split(" "));
 						}catch (Exception e){
 							e.printStackTrace();
 						}
 						
-						argu=null;
-						
+						argusb=null;
 						
 					}
 					out.write("The Program closed Good Bye");
@@ -78,7 +78,7 @@ public class Cli extends MyView{
 			{ try {
 				in.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.out.println("The In stream can't be close");
 			} 
 				out.close();
 			}

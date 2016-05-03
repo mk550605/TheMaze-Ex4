@@ -10,6 +10,8 @@ public class display_cross_section implements Command {
 	@Override
 	public void doCommand(String[] args, Model model ,View view) {
 		int[][] crossmaze = null;
+		if (args.length != 3 )
+			throw new IllegalArgumentException("Inncorrect number of Arguments");
 		try{
 			if(args[0].equals("x")){
 				crossmaze = model.displayCrossSectionByX(Integer.parseInt(args[1]), args[2]);

@@ -10,6 +10,8 @@ public class solve implements Command {
 
 	@Override
 	public void doCommand(String[] args, Model model ,View view) throws IOException {
+		if (args.length != 2 )
+			throw new IllegalArgumentException("Inncorrect number of Arguments");
 		Thread SolverThread = new Thread(new Runnable() {
 			public void run() {
 				model.solveMaze(args[0],args[1]);

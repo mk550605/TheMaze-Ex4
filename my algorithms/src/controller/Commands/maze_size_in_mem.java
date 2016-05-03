@@ -10,8 +10,10 @@ public class maze_size_in_mem implements Command{
 
 	@Override
 	public void doCommand(String[] args, Model model ,View view) throws IOException {
-		model.getMazeSize(args[0]);
-		
+		if (args.length != 1 )
+			throw new IllegalArgumentException("Inncorrect number of Arguments");
+		long size = model.getMazeSize(args[0]);
+		view.print(size + "bytes");
 	}
 
 

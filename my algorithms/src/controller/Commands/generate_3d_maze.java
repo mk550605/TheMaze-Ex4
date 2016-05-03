@@ -8,10 +8,10 @@ public class generate_3d_maze implements Command {
 
 	@Override
 	public void doCommand(String[] args , Model model ,View view) {
+		if (args.length != 4 )
+			throw new IllegalArgumentException("Inncorrect number of Arguments");
 		Thread generateThread = new Thread(new  Runnable() {
 			public void run() {
-				if (args.length < 4 )
-					throw new IllegalArgumentException("Inncorrect number of Arguments");
 				try{
 					model.generateMaze(args [0] ,  Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));	
 				}
