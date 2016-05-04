@@ -136,10 +136,13 @@ public class MyModel implements Model {
 	@Override
 	public void saveToFile(String name, String fileName) throws IOException {
 		Maze3d theMaze = maze3dDB.get(name);
-		OutputStream out=new MyCompressorOutputStream(new FileOutputStream(fileName));
+		FileOutputStream fOut = new FileOutputStream(fileName);
+		OutputStream out=new MyCompressorOutputStream(fOut);
 		out.write(theMaze.toByteArray());
 		out.flush();
 		out.close();
+		fOut.flush();
+		fOut.close();
 		
 	}
 
@@ -202,7 +205,11 @@ public class MyModel implements Model {
 		if(file.exists()){
 			bytes = file.length();
 		}
+		try{
 		file.delete();
+		}catch(Exception e){
+			System.out.println(e);
+		}
 		return bytes;
 	}
 

@@ -15,11 +15,8 @@ private String Exit(){
 
 @Override
 public void doCommand(String[] args, Model model ,View view) throws IOException {
-	//while (!ThraedClosed){
-		
-		
-//	}
-	Exit();
+
+	view.print(Exit());
 }
 
 }

@@ -65,16 +65,7 @@ public class Cli extends MyView{
 						argusb=null;
 						
 					}
-					out.write("The Program closed Good Bye");
-					try {
-						in.close();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					out.close();
-				
-			
+					//out.write("The Program closed Good Bye");
 			{ try {
 				in.close();
 			} catch (IOException e) {
@@ -84,6 +75,7 @@ public class Cli extends MyView{
 			}
 			}
 		});
+			
 			cliThread.start();	
 		}
 }

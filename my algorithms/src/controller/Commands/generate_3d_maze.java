@@ -17,7 +17,7 @@ public class generate_3d_maze implements Command {
 				}
 				 catch (Exception e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						view.print(e); 
 					}
 				view.print("The maze " + args[0] + " is generated");	
 			}
