@@ -13,14 +13,22 @@ public class Cli extends MyView{
 	private BufferedReader in;
 	private PrintWriter out;
 
-	
+	/**
+	 * Command Line Interface for the 3Dmaze Project
+	 * getting the User Commands and arguments.
+	 * @param in - inbound commands
+	 * @param out - outbound information
+	 * @param thecontroller - Controller for the program
+	 */
 	public Cli (BufferedReader in,PrintWriter out , Controller thecontroller) {
 		super(thecontroller);
 		this.in=in;
 		this.out=out;
 		this.commandsSet= controller.getCommandSet();
 	}
-	
+	/**
+	 * Start for the View
+	 */
 	public void start(){
 		Thread cliThread = new Thread(new Runnable() {
 			public void run() {

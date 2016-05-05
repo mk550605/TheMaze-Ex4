@@ -12,7 +12,12 @@ Boolean	ThraedClosed =false;
 private String Exit(){
 	return " the Program Finished";
 }
-
+/**
+ * check that no file or Threads are working and close the Program
+ * @param args - Arguments - None
+ * @param Model - Model of the Program
+ * @param view - View  of the Program
+ */
 @Override
 public void doCommand(String[] args, Model model ,View view) throws IOException {
 

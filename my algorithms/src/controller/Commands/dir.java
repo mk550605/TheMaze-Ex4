@@ -9,7 +9,12 @@ import controller.Command;
 public class dir implements Command{
 
 
-
+/**
+ * display all the files and directory in the path given in the arguments
+ * @param args - Arguments - Path
+ * @param Model - Model of the Program
+ * @param view - View  of the Program
+ */
 	@Override
 	public void doCommand(String[] args , Model model  ,View view) {
 		File f = null;

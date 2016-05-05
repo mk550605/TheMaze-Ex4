@@ -6,7 +6,13 @@ import controller.Command;
 
 public class display_cross_section implements Command {
 
-
+	/**
+	 * display Cross Section of the 3Dmaze as a 2D maze 
+	 * chek the cross wanted by user.
+	 * @param args - Arguments - crossSection , Section Number, 3DMaze Name.
+	 * @param Model - Model of the Program
+	 * @param view - View  of the Program
+	 */
 	@Override
 	public void doCommand(String[] args, Model model ,View view) {
 		int[][] crossmaze = null;

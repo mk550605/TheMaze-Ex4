@@ -145,7 +145,12 @@ public class MyModel implements Model {
 		fOut.close();
 		
 	}
-
+/**
+ * the function load a 3D Maze from a File
+ * @param name - Name of the 3Daze
+ * @param fileName - Name of the Loaded File
+ * @throws IOException
+ */
 	@Override
 	public void loadFromFile(String name, String fileName) throws IOException {
 		try {
@@ -180,7 +185,11 @@ public class MyModel implements Model {
 		
 		
 	}
-
+/**
+ * 	getting the 3DMaze Object Size in the memory
+ * @param name - Name Of the 3Dmaze
+ * @return Long in bytes
+ */
 	@Override
 	public long getMazeSize(String name) {
 		Maze3d theMaze = maze3dDB.get(name);
@@ -191,12 +200,22 @@ public class MyModel implements Model {
 		return size;
 	}
 
-
+	/**
+	 * getting a solution of the 3DMaze 
+	 * @param name - Name Of the 3Dmaze
+	 * @return String of Solution
+	 */
 	@Override
 	public String getSolution(String name) {
 		return mazeSol.get(name).toString();
 	}
-
+	/**
+	 * 
+	 * getting the 3DMaze File Size
+	 * @param name - Name Of the 3Dmaze
+	 * @return double in bytes
+	 * @throws IOException
+	 */
 	@Override
 	public double getMazeSizeinFile(String name) throws IOException {
 		saveToFile(name, "test.maz");
@@ -212,7 +231,11 @@ public class MyModel implements Model {
 		}
 		return bytes;
 	}
-
+/**
+ * Solving the 3DMaze by the given Algorithm
+ * @param name - name of 3DMaze
+ * @param theSearcher - Searching Algorithm
+ */
 	@Override
 	public void solveMaze(String name, String theSearcher) {
 

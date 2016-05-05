@@ -9,12 +9,20 @@ import View.View;
 import controller.Commands.*;
 import controller.Commands.Error;
 
-
+/**
+ *Controller of 3DMaze
+ * @author Michael Kratik
+ *@version 1.0
+ *
+ */
 public class MyController implements Controller{
 	private HashMap<String, Command> commands = new HashMap<String, Command>();
 	private Model model;
 	private View view;	
-
+/**
+ * Constructor of MyController
+ * implement Controller and starting the Command Hashmap for handle all commands
+ */
 	public MyController() {
 		commands.put("dir", new dir());
 		commands.put("generate 3d maze", new generate_3d_maze());
@@ -28,20 +36,39 @@ public class MyController implements Controller{
 		commands.put("display solution", new display_solution());
 		commands.put("exit", new exit());
 	}
-	
+	/**
+	 * Model Setter 
+	 * @param - Model
+	 */
 	public void setModel(Model model) {
 		this.model = model;
 	}
-	
+	/**
+	 * View Setter 
+	 * @param - view
+	 */
 	public void setView(View view) {
 		this.view = view;
 	}
 	
-
+/**
+ * getter for HashMap of Commands
+ * @return HashMap Commands
+ */
 	public HashMap<String, Command> getCommandSet(){
 		return commands;
 	}
-	public void handleUserCommand(String cmd, String[] args , Model model , View view) throws IOException {
+	/**
+	 * 
+	 * private methud for handle User Command by finding the command in the hashMap and running the 
+	 * doCommand function of it. 
+	 * @param command 
+	 * @param arguments of the command.
+	 * @param model
+	 * @param view
+	 * 
+	 */
+	private void handleUserCommand(String cmd, String[] args , Model model , View view) throws IOException {
 		Command command = new Error();
 		if(!cmd.equals("")){
 			for (Entry<String, Command> e : commands.entrySet()) {
@@ -49,12 +76,16 @@ public class MyController implements Controller{
 					command = e.getValue();
 					break;
 				}
-				   //add to my result list
 			}
 		}
 		command.doCommand(args , model , view);
 	}
-
+	/**
+	 * handle User Command by adding the Model and view to the 
+	 * @param command 
+	 * @param arguments of the command.
+	 * 
+	 */
 	@Override
 	public void handleUserCommand(String cmd, String[] args) throws IOException {
 		handleUserCommand(cmd, args, model,view);

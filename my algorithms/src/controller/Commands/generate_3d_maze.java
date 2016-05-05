@@ -5,7 +5,12 @@ import View.View;
 import controller.Command;
 
 public class generate_3d_maze implements Command {
-
+	/**
+	 * generate 3DMaze running in a separate Thread.
+	 * @param args - Arguments - Name of the Maze , num of cols , num of rows , num of floors.
+	 * @param Model - Model of the Program
+	 * @param view - View  of the Program
+	 */
 	@Override
 	public void doCommand(String[] args , Model model ,View view) {
 		if (args.length != 4 )
