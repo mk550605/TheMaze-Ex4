@@ -17,4 +17,5 @@ public interface Controller {
 	public void setView (View view);
 	public HashMap<String, Command> getCommandSet();
 	public void handleUserCommand(String cmd, String[] args ) throws IOException;
+	public void getNotifyDone(String msg);
 }

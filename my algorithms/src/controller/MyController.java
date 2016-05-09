@@ -35,6 +35,7 @@ public class MyController implements Controller{
 		commands.put("solve", new solve());
 		commands.put("display solution", new display_solution());
 		commands.put("exit", new exit());
+		commands.put("help", new Help());
 	}
 	/**
 	 * Model Setter 
@@ -90,8 +91,9 @@ public class MyController implements Controller{
 	public void handleUserCommand(String cmd, String[] args) throws IOException {
 		handleUserCommand(cmd, args, model,view);
 	}
-
-
+	public void getNotifyDone(String msg){
+		view.print(msg);
+	}
 
 
 	

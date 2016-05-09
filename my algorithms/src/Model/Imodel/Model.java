@@ -17,5 +17,5 @@ public interface Model {
 	public double getMazeSizeinFile(String name)throws IOException;
 	public void solveMaze(String name, String theSearcher);
 	public String getSolution(String name);
-	
+	public void Exit();
 }

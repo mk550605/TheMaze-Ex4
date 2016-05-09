@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import Model.IO.MyCompressorOutputStream;
@@ -19,7 +20,7 @@ import Model.algorithms.Search.Solution;
 import Model.algorithms.demo.MazeAdapter;
 import Model.algorithms.mazeGenerators.Maze3d;
 import Model.algorithms.mazeGenerators.myMaze3dGenerator;
-
+import View.View;
 import controller.Controller;
 
 
@@ -32,12 +33,12 @@ import controller.Controller;
  *
  */
 public class MyModel implements Model {
-	private static final int BYTEARRAYSIZE = 10000;
+	private static final int BYTEARRAYSIZE = 5000;
 	private Controller thecontroller;
 	private ConcurrentHashMap<String, Maze3d> maze3dDB = new ConcurrentHashMap<String, Maze3d>();
 	private ConcurrentHashMap<String, Solution> mazeSol = new ConcurrentHashMap<String, Solution>(); 
-
-
+	private ArrayList<Thread> listOfThreads = new ArrayList<Thread>();
+	
 	/**
 	 * initialize the model
 	 * @param c - thecontroller
@@ -55,15 +56,21 @@ public class MyModel implements Model {
 	 */
 	@Override
 	public void generateMaze(String name , int cols , int rows , int floors) throws Exception{
-		
+		Thread generateMaze = new Thread(new Runnable() {
+			public void run() {
 				myMaze3dGenerator mg = new myMaze3dGenerator();
 				try{
 				Maze3d theMaze = mg.generate(cols, rows, floors);
 				maze3dDB.put(name, theMaze);
+				thecontroller.getNotifyDone("the maze " + name + " is ready \n");
 				}catch(Exception e){
 					e.printStackTrace();
 				}
-		
+				
+			}
+		});
+		generateMaze.start();
+		listOfThreads.add(generateMaze);
 	}
 /**
  * Printing the maze
@@ -72,6 +79,9 @@ public class MyModel implements Model {
  */
 	@Override
 	public String displayMaze3D(String name) {
+		if(!maze3dDB.containsKey(name)){
+			return "The Maze does not Exist";
+		}
 		Maze3d theMaze = maze3dDB.get(name);
 		return theMaze.toString();
 	}
@@ -83,6 +93,10 @@ public class MyModel implements Model {
  */
 	@Override
 	public int[][] displayCrossSectionByX(int x , String name) {
+		if(!maze3dDB.containsKey(name)){
+			thecontroller.getNotifyDone("The Maze does not Exist");
+			return null;
+		}
 		Maze3d theMaze = maze3dDB.get(name);
 		try {
 			return theMaze.getCrossSectionByX(x);
@@ -100,6 +114,10 @@ public class MyModel implements Model {
 	 */
 	@Override
 	public int[][] displayCrossSectionByY(int x, String name) {
+		if(!maze3dDB.containsKey(name)){
+			thecontroller.getNotifyDone("The Maze does not Exist");
+			return null;
+		}
 		Maze3d theMaze = maze3dDB.get(name);
 		try {
 			return theMaze.getCrossSectionByY(x);
@@ -118,6 +136,10 @@ public class MyModel implements Model {
 	 */
 	@Override
 	public int[][] displayCrossSectionByZ(int x, String name) {
+		if(!maze3dDB.containsKey(name)){
+			thecontroller.getNotifyDone("The Maze does not Exist");
+			return null;
+		}
 		Maze3d theMaze = maze3dDB.get(name);
 		try {
 			return theMaze.getCrossSectionByZ(x);
@@ -135,14 +157,22 @@ public class MyModel implements Model {
  */
 	@Override
 	public void saveToFile(String name, String fileName) throws IOException {
-		Maze3d theMaze = maze3dDB.get(name);
-		FileOutputStream fOut = new FileOutputStream(fileName);
-		OutputStream out=new MyCompressorOutputStream(fOut);
-		out.write(theMaze.toByteArray());
-		out.flush();
-		out.close();
-		fOut.flush();
-		fOut.close();
+		if(!maze3dDB.containsKey(name)){
+			thecontroller.getNotifyDone("The Maze does not Exist");
+			
+		}
+		else{
+			Maze3d theMaze = maze3dDB.get(name);
+			FileOutputStream fOut = new FileOutputStream(fileName);
+			OutputStream out=new MyCompressorOutputStream(fOut);
+			byte[] date = theMaze.toByteArray();
+			out.write(date.length);
+			out.write(date);
+			out.flush();
+			out.close();
+			fOut.flush();
+			fOut.close();
+			}
 		
 	}
 /**
@@ -155,28 +185,10 @@ public class MyModel implements Model {
 	public void loadFromFile(String name, String fileName) throws IOException {
 		try {
 			InputStream in = new MyDecompressorInputStream(new FileInputStream(fileName));
-			byte b[]=new byte[BYTEARRAYSIZE];//            How to know how big the array should be?
-			Arrays.fill( b, (byte) -1 );
+			byte[] b =new byte[in.read()];
 			in.read(b);
 			in.close();
-			int pointer = BYTEARRAYSIZE/2;
-			for (int i=0; i<BYTEARRAYSIZE;i++){
-				if (!(b[pointer] ==-1)){
-					pointer++;
-				}
-				else{
-					pointer--;
-					if (!(b[pointer] ==-1)){
-						break;
-				}
-			}
-			}
-				byte c[]=new byte[pointer];
-				for(int i=0; i<pointer;i++){
-					c[i]= b[i];
-				}
-			
-			Maze3d theMaze=new Maze3d(c);
+			Maze3d theMaze=new Maze3d(b);
 			maze3dDB.put(name, theMaze);
 		}
 		 catch (FileNotFoundException e) {
@@ -238,7 +250,8 @@ public class MyModel implements Model {
  */
 	@Override
 	public void solveMaze(String name, String theSearcher) {
-
+		Thread SolveThread = new Thread(new Runnable() {
+			public void run() {
 				Maze3d theMaze = maze3dDB.get(name);
 				MazeAdapter myAdapter = new MazeAdapter(theMaze);
 				Searcher ser;
@@ -254,9 +267,22 @@ public class MyModel implements Model {
 				}
 				sol = ser.search(myAdapter);
 				mazeSol.put(name, sol);
-			
-		
+				thecontroller.getNotifyDone("the Solution of" + name + "is ready \n");
+			}
+		});
+			SolveThread.start();
+			listOfThreads.add(SolveThread);
 	}
+@SuppressWarnings("deprecation")
+@Override
+public void Exit() {
+	for (int i = 0; i < listOfThreads.size(); i++) {
+		listOfThreads.get(i).stop();
+	}
+	thecontroller.getNotifyDone("all Thread are stoped");
+	
+}
+	
 
 
 

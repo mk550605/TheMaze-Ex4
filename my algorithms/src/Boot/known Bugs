@@ -1,2 +1,2 @@
 bugs:  
-Load, check Threads on exit
+Load until size of 255 byte only
