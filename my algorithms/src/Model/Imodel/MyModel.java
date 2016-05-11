@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import Model.IO.MyCompressorOutputStream;
 import Model.IO.MyDecompressorInputStream;
@@ -20,7 +19,6 @@ import Model.algorithms.Search.Solution;
 import Model.algorithms.demo.MazeAdapter;
 import Model.algorithms.mazeGenerators.Maze3d;
 import Model.algorithms.mazeGenerators.myMaze3dGenerator;
-import View.View;
 import controller.Controller;
 
 
@@ -28,12 +26,11 @@ import controller.Controller;
 /**
  * Class Define all the Project Functionality available on the maze3d system logic 
  * @author Michael Kratik
- * @version 1.3
+ * @version 1.4
  * 
  *
  */
 public class MyModel implements Model {
-	private static final int BYTEARRAYSIZE = 5000;
 	private Controller thecontroller;
 	private ConcurrentHashMap<String, Maze3d> maze3dDB = new ConcurrentHashMap<String, Maze3d>();
 	private ConcurrentHashMap<String, Solution> mazeSol = new ConcurrentHashMap<String, Solution>(); 
@@ -162,11 +159,19 @@ public class MyModel implements Model {
 			
 		}
 		else{
+			//int sizeCounter= 0;
 			Maze3d theMaze = maze3dDB.get(name);
 			FileOutputStream fOut = new FileOutputStream(fileName);
 			OutputStream out=new MyCompressorOutputStream(fOut);
 			byte[] date = theMaze.toByteArray();
-			out.write(date.length);
+			int size = date.length;
+			
+			//while (size > 255){
+			//	size -= 255;
+			//	sizeCounter++;
+			//}
+			out.write(size/255);
+			out.write(size%255);
 			out.write(date);
 			out.flush();
 			out.close();
@@ -185,7 +190,10 @@ public class MyModel implements Model {
 	public void loadFromFile(String name, String fileName) throws IOException {
 		try {
 			InputStream in = new MyDecompressorInputStream(new FileInputStream(fileName));
-			byte[] b =new byte[in.read()];
+			int size = in.read();
+			size *= 255;
+			size += in.read();
+			byte[] b =new byte[size];
 			in.read(b);
 			in.close();
 			Maze3d theMaze=new Maze3d(b);
