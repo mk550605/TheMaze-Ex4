@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Observable;
 import java.util.concurrent.ConcurrentHashMap;
 import Model.IO.MyCompressorOutputStream;
 import Model.IO.MyDecompressorInputStream;
@@ -30,18 +31,18 @@ import controller.Controller;
  * 
  *
  */
-public class MyModel implements Model {
-	private Controller thecontroller;
+public class MyModel extends Observable implements Model {
 	private ConcurrentHashMap<String, Maze3d> maze3dDB = new ConcurrentHashMap<String, Maze3d>();
 	private ConcurrentHashMap<String, Solution> mazeSol = new ConcurrentHashMap<String, Solution>(); 
 	private ArrayList<Thread> listOfThreads = new ArrayList<Thread>();
-	
+	private String mazeGeneretedMsg;
+	private String solutionMSG;
+	private String exitMSG;
 	/**
 	 * initialize the model
 	 * @param c - thecontroller
 	 */
-	public MyModel(Controller c) {
-		this.thecontroller=c;
+	public MyModel() {
 	}
 	/**
 	 * Generate a 3D maze with myMaze3dGenerator algoritem
@@ -59,7 +60,9 @@ public class MyModel implements Model {
 				try{
 				Maze3d theMaze = mg.generate(cols, rows, floors);
 				maze3dDB.put(name, theMaze);
-				thecontroller.getNotifyDone("the maze " + name + " is ready \n");
+				mazeGeneretedMsg= "the maze " + name + " is ready \n";
+				setChanged();
+				notifyObservers("MazeDone");
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -68,6 +71,10 @@ public class MyModel implements Model {
 		});
 		generateMaze.start();
 		listOfThreads.add(generateMaze);
+	}
+	
+	public String getMazeGeneretedMsg(){
+		return mazeGeneretedMsg;
 	}
 /**
  * Printing the maze
@@ -82,6 +89,16 @@ public class MyModel implements Model {
 		Maze3d theMaze = maze3dDB.get(name);
 		return theMaze.toString();
 	}
+	
+	public Maze3d getMaze(String name){
+		if(!maze3dDB.containsKey(name)){
+			 //;
+		}
+		Maze3d theMaze = maze3dDB.get(name);
+		return theMaze;
+	}
+	
+	
 /**
  * display the cross section by X definition on the selected col with maze name
  * @param x - definition of maze
@@ -91,7 +108,7 @@ public class MyModel implements Model {
 	@Override
 	public int[][] displayCrossSectionByX(int x , String name) {
 		if(!maze3dDB.containsKey(name)){
-			thecontroller.getNotifyDone("The Maze does not Exist");
+		//	thecontroller.getNotifyDone("The Maze does not Exist");
 			return null;
 		}
 		Maze3d theMaze = maze3dDB.get(name);
@@ -101,7 +118,7 @@ public class MyModel implements Model {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;	
+		return null;
 	}
 	/**
 	 * display the cross section by Y definition on the selected col with maze name
@@ -112,7 +129,7 @@ public class MyModel implements Model {
 	@Override
 	public int[][] displayCrossSectionByY(int x, String name) {
 		if(!maze3dDB.containsKey(name)){
-			thecontroller.getNotifyDone("The Maze does not Exist");
+		//	thecontroller.getNotifyDone("The Maze does not Exist");
 			return null;
 		}
 		Maze3d theMaze = maze3dDB.get(name);
@@ -134,7 +151,7 @@ public class MyModel implements Model {
 	@Override
 	public int[][] displayCrossSectionByZ(int x, String name) {
 		if(!maze3dDB.containsKey(name)){
-			thecontroller.getNotifyDone("The Maze does not Exist");
+		//	thecontroller.getNotifyDone("The Maze does not Exist");
 			return null;
 		}
 		Maze3d theMaze = maze3dDB.get(name);
@@ -155,21 +172,15 @@ public class MyModel implements Model {
 	@Override
 	public void saveToFile(String name, String fileName) throws IOException {
 		if(!maze3dDB.containsKey(name)){
-			thecontroller.getNotifyDone("The Maze does not Exist");
+		//	thecontroller.getNotifyDone("The Maze does not Exist");
 			
 		}
 		else{
-			//int sizeCounter= 0;
 			Maze3d theMaze = maze3dDB.get(name);
 			FileOutputStream fOut = new FileOutputStream(fileName);
 			OutputStream out=new MyCompressorOutputStream(fOut);
 			byte[] date = theMaze.toByteArray();
 			int size = date.length;
-			
-			//while (size > 255){
-			//	size -= 255;
-			//	sizeCounter++;
-			//}
 			out.write(size/255);
 			out.write(size%255);
 			out.write(date);
@@ -275,22 +286,34 @@ public class MyModel implements Model {
 				}
 				sol = ser.search(myAdapter);
 				mazeSol.put(name, sol);
-				thecontroller.getNotifyDone("the Solution of" + name + "is ready \n");
+				solutionMSG = "the Solution of" + name + "is ready \n";
+				setChanged();
+				notifyObservers("SolutionisReady");
+				//thecontroller.getNotifyDone("the Solution of" + name + "is ready \n");
 			}
 		});
 			SolveThread.start();
 			listOfThreads.add(SolveThread);
 	}
-@SuppressWarnings("deprecation")
-@Override
-public void Exit() {
-	for (int i = 0; i < listOfThreads.size(); i++) {
-		listOfThreads.get(i).stop();
+	
+	public String getSolutionMSG(){
+		return solutionMSG;
 	}
-	thecontroller.getNotifyDone("all Thread are stoped");
-	
-}
-	
+	@SuppressWarnings("deprecation")
+	@Override
+	public void Exit() {
+		for (int i = 0; i < listOfThreads.size(); i++) {
+			listOfThreads.get(i).stop();
+		}
+		exitMSG = "all Thread are stoped";
+		setChanged();
+		notifyObservers("canExit");
+		//thecontroller.getNotifyDone("all Thread are stoped");
+		
+	}
+	public String getExitMSG(){
+		return exitMSG;
+	}
 
 
 

@@ -8,7 +8,7 @@ import View.Cli;
 import View.View;
 /**
  *Interface for Controller  
- * @author Michael Kratik
+ * @author Michael Kratik & Tzipi Cabiri 
  *@version 1.0
  *
  */

@@ -3,7 +3,7 @@ package View;
 import java.io.IOException;
 import java.util.HashMap;
 
-import controller.Command;
+import Presenter.Command;
 /**
  * Interface for View
  * @author Michael Kratik & Tzipi Cabiri 
@@ -11,6 +11,6 @@ import controller.Command;
  *
  */
 public interface View {
-	void start() throws IOException;
-	void print(Object textToPrint);
+	void displayMessage(String message);
+	void start();	
 }

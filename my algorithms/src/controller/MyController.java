@@ -11,7 +11,7 @@ import controller.Commands.Error;
 
 /**
  *Controller of 3DMaze
- * @author Michael Kratik
+ * @author Michael Kratik & Tzipi Cabiri 
  *@version 1.0
  *
  */

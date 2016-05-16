@@ -7,7 +7,7 @@ import controller.Command;
 import controller.Controller;
 /**
  * Define the bases of MyView
- * @author Michael Kratik
+ * @author Michael Kratik &Tzipi Cabiri 
  *@version 1.0
  */
 public class MyView implements View{
