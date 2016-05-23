@@ -21,6 +21,9 @@ private String Exit(){
 @Override
 public void doCommand(String[] args, Model model ,View view) throws IOException {
 	model.Exit();
+	view.displayMessage("\nsaving DB ...\n");
+	model.saveHashMap();
+	view.displayMessage("DB Saved\n");
 	view.displayMessage(Exit());
 }
 

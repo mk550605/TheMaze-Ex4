@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import Model.Imodel.MyModel;
 import Presenter.Presenter;
 import View.MyView;
+import View.Gui.MazeWindow;
+import View.Gui.basicWindow;
 
 
 
@@ -22,8 +24,21 @@ public class run {
 		Presenter presenter = new Presenter(model, view);
 		view.addObserver(presenter);
 		model.addObserver(presenter);
-		
+		model.loadHashMap();
 		view.start();		
 	}
+	
+	
+	/*public static void main(String[] args) {
+		MyModel model = new MyModel();
+		
+		//MyView view = new MyView(reader, writer);
+		MazeWindow view = new MazeWindow();
+		Presenter presenter = new Presenter(model, view);
+		view.addObserver(presenter);
+		model.addObserver(presenter);
+		model.loadHashMap();
+		view.start();		
+	}*/
 
 }

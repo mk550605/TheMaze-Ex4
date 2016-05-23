@@ -6,6 +6,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import Model.Imodel.Model;
+import Presenter.CommandsModel.Error;
 import Presenter.CommandsModel.Help;
 import Presenter.CommandsModel.Load_Maze;
 import Presenter.CommandsModel.Save_Maze;
@@ -18,6 +19,7 @@ import Presenter.CommandsModel.generate_3d_maze;
 import Presenter.CommandsModel.maze_size_in_file;
 import Presenter.CommandsModel.maze_size_in_mem;
 import Presenter.CommandsModel.solve;
+import Presenter.CommandsView.DisplayErrorMSG;
 import Presenter.CommandsView.DisplayExitMSG;
 import Presenter.CommandsView.DisplayMazeReadyMessageCommand;
 import Presenter.CommandsView.DisplaySolutionMSG;
@@ -49,9 +51,11 @@ public class Presenter implements Observer {
 		modelCommands.put("display_solution", new display_solution());
 		modelCommands.put("exit", new exit());
 		modelCommands.put("help", new Help());
+		modelCommands.put("Error", new Error());
 		viewCommands.put("MazeDone", new DisplayMazeReadyMessageCommand());
 		viewCommands.put("canExit", new DisplayExitMSG());
 		viewCommands.put("SolutionisReady", new DisplaySolutionMSG());
+		viewCommands.put("Error", new DisplayErrorMSG());
 	}
 	@Override
 	public void update(Observable o, Object arg) {
@@ -60,7 +64,7 @@ public class Presenter implements Observer {
 			Command command = viewCommands.get(CommandName);
 			try {
 				command.doCommand(null, model,view);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -73,9 +77,11 @@ public class Presenter implements Observer {
 			System.arraycopy(arr, 1, args, 0, arr.length - 1);
 			
 			Command command = modelCommands.get(commandName);
+			if (command == null)
+				command=modelCommands.get("Error");
 			try {
 				command.doCommand(args , model, view);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}	

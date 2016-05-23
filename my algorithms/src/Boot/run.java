@@ -15,14 +15,16 @@ import controller.MyController;
 
 public class run {
 	
-	public static void main(String[] args) throws IOException {
-		
+	public static void main(String[] args) throws Exception {
+	/*	
 		Controller c =new MyController();
 		Model m = new MyModel(c);
 		View view =  new Cli(new BufferedReader(new InputStreamReader(System.in)), new PrintWriter(System.out),c);
 		c.setModel(m);
 		c.setView(view);
-		view.start();
+		view.start();*/
+		Demo myDemo = new Demo();
+		
 	}
 
 }

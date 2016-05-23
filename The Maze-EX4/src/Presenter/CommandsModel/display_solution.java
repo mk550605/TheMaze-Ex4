@@ -3,6 +3,7 @@ package Presenter.CommandsModel;
 import java.io.IOException;
 
 import Model.Imodel.Model;
+import Model.algorithms.Search.Solution;
 import Presenter.Command;
 import View.View;
 
@@ -17,7 +18,10 @@ public class display_solution implements Command {
 	public void doCommand(String[] args, Model model ,View view) throws IOException {
 		if (args.length != 1 )
 			throw new IllegalArgumentException("Inncorrect number of Arguments");
-		view.displayMessage(model.getSolution(args[0]));
+		Solution sol =model.getSolution(args[0]);
+		if (sol != null){
+			view.displayMessage(sol.toString());
+		}
 		
 	}
 

@@ -1,15 +1,25 @@
 package Model.Imodel;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Observable;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
+
 import Model.IO.MyCompressorOutputStream;
 import Model.IO.MyDecompressorInputStream;
 import Model.algorithms.Search.BestFS;
@@ -19,9 +29,6 @@ import Model.algorithms.Search.Searcher;
 import Model.algorithms.Search.Solution;
 import Model.algorithms.demo.MazeAdapter;
 import Model.algorithms.mazeGenerators.Maze3d;
-import Model.algorithms.mazeGenerators.myMaze3dGenerator;
-import controller.Controller;
-
 
 
 /**
@@ -32,12 +39,17 @@ import controller.Controller;
  *
  */
 public class MyModel extends Observable implements Model {
-	private ConcurrentHashMap<String, Maze3d> maze3dDB = new ConcurrentHashMap<String, Maze3d>();
-	private ConcurrentHashMap<String, Solution> mazeSol = new ConcurrentHashMap<String, Solution>(); 
-	private ArrayList<Thread> listOfThreads = new ArrayList<Thread>();
-	private String mazeGeneretedMsg;
+	private static int THREADNUM =20;
+//	protected ConcurrentHashMap<String, Maze3d> maze3dDB = new ConcurrentHashMap<String, Maze3d>();
+//	private ConcurrentHashMap<String, Solution> mazeSol = new ConcurrentHashMap<String, Solution>(); 
+	private ConcurrentHashMap<String,Pair<Maze3d, Solution>> DB = new  ConcurrentHashMap<String,Pair<Maze3d, Solution>>() ;
+	protected String mazeGeneretedMsg;
 	private String solutionMSG;
+	protected String Error;
 	private String exitMSG;
+	ExecutorService executor = Executors.newFixedThreadPool(THREADNUM);
+	
+
 	/**
 	 * initialize the model
 	 * @param c - thecontroller
@@ -53,26 +65,72 @@ public class MyModel extends Observable implements Model {
 	 * @throws Exception
 	 */
 	@Override
-	public void generateMaze(String name , int cols , int rows , int floors) throws Exception{
-		Thread generateMaze = new Thread(new Runnable() {
-			public void run() {
-				myMaze3dGenerator mg = new myMaze3dGenerator();
-				try{
-				Maze3d theMaze = mg.generate(cols, rows, floors);
-				maze3dDB.put(name, theMaze);
-				mazeGeneretedMsg= "the maze " + name + " is ready \n";
-				setChanged();
-				notifyObservers("MazeDone");
-				}catch(Exception e){
-					e.printStackTrace();
-				}
+	public void generateMaze(String name , int cols , int rows , int floors) {
+		if(!DB.containsKey(name)){
+			try{
+				Callable<Maze3d> GenTask = new Gen3DMazeCallable( cols, rows, floors);
+				Future<Maze3d> theMaze = executor.submit(GenTask);
+				putToMazeDB(theMaze.get(), name);
 				
+			}catch(Exception e){
+					Error= "problem to Generate 3Dmaze \n" +e;
+					setChanged();
+					notifyObservers("Error");
 			}
-		});
-		generateMaze.start();
-		listOfThreads.add(generateMaze);
+		}else{
+			Error= "problem to Generate 3Dmaze - Maze with this name already exists \n" ;
+			setChanged();
+			notifyObservers("Error");
+		}
 	}
 	
+	/**
+	 * Solving the 3DMaze by the given Algorithm
+	 * @param name - name of 3DMaze
+	 * @param theSearcher - Searching Algorithm
+	 */
+		@Override
+		public void solveMaze(String name, String theSearcher) {
+			
+			if(DB.containsKey(name)){
+				if(DB.get(name).sol==null){
+					try{
+						Maze3d theMaze = DB.get(name).maze;
+						MazeAdapter myAdapter = new MazeAdapter(theMaze);
+						Searcher ser;
+						if (theSearcher=="bestfs"){
+							ser = new BestFS();
+						}
+						else if(theSearcher=="breadthfs"){
+							ser = new BreadthFS();
+							}
+						else{
+							ser = new DFS();
+						}
+					
+						Callable<Solution> genSol =new Solve3DMazeCallable(myAdapter,ser);
+						Future<Solution> solution = executor.submit(genSol);
+						DB.get(name).sol=solution.get();
+						solutionMSG = "the Solution of " + name + " is ready \n";
+						setChanged();
+						notifyObservers("SolutionisReady");
+					}catch(Exception e){
+						Error= "problem to Solve 3Dmaze \n" +e;
+						setChanged();
+						notifyObservers("Error");
+					}
+				}else{
+					solutionMSG = "the Solution of " + name + " exists and ready \n";
+					setChanged();
+					notifyObservers("SolutionisReady");
+				}
+			}
+			else{
+				Error= "Maze does not exist \n" ;
+				setChanged();
+				notifyObservers("Error");
+			}
+		}
 	public String getMazeGeneretedMsg(){
 		return mazeGeneretedMsg;
 	}
@@ -83,18 +141,22 @@ public class MyModel extends Observable implements Model {
  */
 	@Override
 	public String displayMaze3D(String name) {
-		if(!maze3dDB.containsKey(name)){
-			return "The Maze does not Exist";
+		if(!DB.containsKey(name)){
+			Error= "Maze does not exist  ";
+			setChanged();
+			notifyObservers("Error");
 		}
-		Maze3d theMaze = maze3dDB.get(name);
+		Maze3d theMaze = DB.get(name).maze;
 		return theMaze.toString();
 	}
 	
 	public Maze3d getMaze(String name){
-		if(!maze3dDB.containsKey(name)){
-			 //;
+		if(!DB.containsKey(name)){
+			Error= "Maze does not exist  ";
+			setChanged();
+			notifyObservers("Error");
 		}
-		Maze3d theMaze = maze3dDB.get(name);
+		Maze3d theMaze = DB.get(name).maze;
 		return theMaze;
 	}
 	
@@ -107,16 +169,19 @@ public class MyModel extends Observable implements Model {
  */
 	@Override
 	public int[][] displayCrossSectionByX(int x , String name) {
-		if(!maze3dDB.containsKey(name)){
-		//	thecontroller.getNotifyDone("The Maze does not Exist");
+		if(!DB.containsKey(name)){
+			Error= "Maze does not exist  ";
+			setChanged();
+			notifyObservers("Error");
 			return null;
 		}
-		Maze3d theMaze = maze3dDB.get(name);
+		Maze3d theMaze = DB.get(name).maze;
 		try {
 			return theMaze.getCrossSectionByX(x);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Error= "Error Getting CrossSectionByX " +e.toString();
+			setChanged();
+			notifyObservers("Error");
 		}
 		return null;
 	}
@@ -128,16 +193,19 @@ public class MyModel extends Observable implements Model {
 	 */
 	@Override
 	public int[][] displayCrossSectionByY(int x, String name) {
-		if(!maze3dDB.containsKey(name)){
-		//	thecontroller.getNotifyDone("The Maze does not Exist");
+		if(!DB.containsKey(name)){
+			Error= "Maze does not exist  ";
+			setChanged();
+			notifyObservers("Error");
 			return null;
 		}
-		Maze3d theMaze = maze3dDB.get(name);
+		Maze3d theMaze = DB.get(name).maze;
 		try {
 			return theMaze.getCrossSectionByY(x);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Error= "Error Getting CrossSectionByY " +e.toString();
+			setChanged();
+			notifyObservers("Error");
 		}
 		return null;
 	}
@@ -150,16 +218,19 @@ public class MyModel extends Observable implements Model {
 	 */
 	@Override
 	public int[][] displayCrossSectionByZ(int x, String name) {
-		if(!maze3dDB.containsKey(name)){
-		//	thecontroller.getNotifyDone("The Maze does not Exist");
+		if(!DB.containsKey(name)){
+			Error= "Maze does not exist  ";
+			setChanged();
+			notifyObservers("Error");
 			return null;
 		}
-		Maze3d theMaze = maze3dDB.get(name);
+		Maze3d theMaze = DB.get(name).maze;
 		try {
 			return theMaze.getCrossSectionByZ(x);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Error= "Error Getting CrossSectionByZ " +e.toString();
+			setChanged();
+			notifyObservers("Error");
 		}
 		return null;	
 	}
@@ -171,12 +242,13 @@ public class MyModel extends Observable implements Model {
  */
 	@Override
 	public void saveToFile(String name, String fileName) throws IOException {
-		if(!maze3dDB.containsKey(name)){
-		//	thecontroller.getNotifyDone("The Maze does not Exist");
-			
+		if(!DB.containsKey(name)){
+			Error= "Maze does not exist  ";
+			setChanged();
+			notifyObservers("Error");
 		}
 		else{
-			Maze3d theMaze = maze3dDB.get(name);
+			Maze3d theMaze = DB.get(name).maze;
 			FileOutputStream fOut = new FileOutputStream(fileName);
 			OutputStream out=new MyCompressorOutputStream(fOut);
 			byte[] date = theMaze.toByteArray();
@@ -199,8 +271,16 @@ public class MyModel extends Observable implements Model {
  */
 	@Override
 	public void loadFromFile(String name, String fileName) throws IOException {
+		InputStream in = null;
 		try {
-			InputStream in = new MyDecompressorInputStream(new FileInputStream(fileName));
+			 in = new MyDecompressorInputStream(new FileInputStream(fileName));
+		}
+			 catch (FileNotFoundException e) {
+				 	Error= "File does not Exist";
+					setChanged();
+					notifyObservers("Error");
+			 }
+		try{
 			int size = in.read();
 			size *= 255;
 			size += in.read();
@@ -208,10 +288,12 @@ public class MyModel extends Observable implements Model {
 			in.read(b);
 			in.close();
 			Maze3d theMaze=new Maze3d(b);
-			maze3dDB.put(name, theMaze);
+			DB.put(name, new Pair<Maze3d, Solution>(theMaze, null));
 		}
 		 catch (FileNotFoundException e) {
-			e.printStackTrace();
+			 	Error= "Error Loading File";
+				setChanged();
+				notifyObservers("Error");
 		}
 		
 		
@@ -223,7 +305,13 @@ public class MyModel extends Observable implements Model {
  */
 	@Override
 	public long getMazeSize(String name) {
-		Maze3d theMaze = maze3dDB.get(name);
+		if(!DB.containsKey(name)){
+			Error= "Maze does not exist  ";
+			setChanged();
+			notifyObservers("Error");
+			return -1;
+		}
+		Maze3d theMaze = DB.get(name).maze;
 		int size = theMaze.getCols() * theMaze.getRows();
 		size = size * theMaze.getFloor();
 		size = size + 9;
@@ -237,8 +325,20 @@ public class MyModel extends Observable implements Model {
 	 * @return String of Solution
 	 */
 	@Override
-	public String getSolution(String name) {
-		return mazeSol.get(name).toString();
+	public Solution getSolution(String name) {
+		if(!DB.containsKey(name)){
+			Error= "Maze does not exist  ";
+			setChanged();
+			notifyObservers("Error");
+			return null;
+		}
+		if(DB.get(name).sol==null){
+			Error= "Solution does not exist  ";
+			setChanged();
+			notifyObservers("Error");
+			return null;
+		}
+		return DB.get(name).sol;
 	}
 	/**
 	 * 
@@ -262,39 +362,7 @@ public class MyModel extends Observable implements Model {
 		}
 		return bytes;
 	}
-/**
- * Solving the 3DMaze by the given Algorithm
- * @param name - name of 3DMaze
- * @param theSearcher - Searching Algorithm
- */
-	@Override
-	public void solveMaze(String name, String theSearcher) {
-		Thread SolveThread = new Thread(new Runnable() {
-			public void run() {
-				Maze3d theMaze = maze3dDB.get(name);
-				MazeAdapter myAdapter = new MazeAdapter(theMaze);
-				Searcher ser;
-				Solution sol;
-				if (theSearcher=="bestfs"){
-					ser = new BestFS();
-				}
-				else if(theSearcher=="breadthfs"){
-					ser = new BreadthFS();
-					}
-				else{
-					ser = new DFS();
-				}
-				sol = ser.search(myAdapter);
-				mazeSol.put(name, sol);
-				solutionMSG = "the Solution of" + name + "is ready \n";
-				setChanged();
-				notifyObservers("SolutionisReady");
-				//thecontroller.getNotifyDone("the Solution of" + name + "is ready \n");
-			}
-		});
-			SolveThread.start();
-			listOfThreads.add(SolveThread);
-	}
+
 	
 	public String getSolutionMSG(){
 		return solutionMSG;
@@ -302,9 +370,7 @@ public class MyModel extends Observable implements Model {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void Exit() {
-		for (int i = 0; i < listOfThreads.size(); i++) {
-			listOfThreads.get(i).stop();
-		}
+		executor.shutdown();
 		exitMSG = "all Thread are stoped";
 		setChanged();
 		notifyObservers("canExit");
@@ -314,7 +380,88 @@ public class MyModel extends Observable implements Model {
 	public String getExitMSG(){
 		return exitMSG;
 	}
-
-
-
+	
+	public String getError(){
+		return Error;
+	}
+	
+	protected void putToMazeDB(Maze3d themaze, String name){
+		DB.put(name, new Pair<Maze3d, Solution>(themaze, null));
+		mazeGeneretedMsg= "the maze " + name + " is ready \n";
+		setChanged();
+		notifyObservers("MazeDone");
+	}
+	public void saveHashMap(){
+		 try
+	      {
+			 // Convert DB to byte array
+			 ByteArrayOutputStream dbByteOut = new ByteArrayOutputStream();
+	         ObjectOutputStream dbOut = new ObjectOutputStream(dbByteOut);
+	         dbOut.writeObject(DB);
+	         
+	         // Compress DB with GZip
+			 byte[] dbCompressed = compressWithGZip(dbByteOut.toByteArray());
+			 
+			 // Save compressed DB to file
+	         FileOutputStream fileOut = new FileOutputStream("Mazes.DB");
+	         ObjectOutputStream out = new ObjectOutputStream(fileOut);
+	         out.write(dbCompressed);
+	         out.close();
+	         fileOut.close();
+	      }catch(Exception e)
+	      {
+	          e.printStackTrace();
+	      }
+	}
+	
+	public static byte[] compressWithGZip(byte[] array) throws Exception {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        GZIPOutputStream gzipOutputStream = new GZIPOutputStream(out);
+        gzipOutputStream.write(array);
+        gzipOutputStream.close();
+        return out.toByteArray();
+    }
+ 
+	
+	public static byte[] decompressWithGZip(byte[] array) throws Exception{
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	    GZIPInputStream inputStream = new GZIPInputStream(new ByteArrayInputStream(array));
+	    byte[] buffer = new byte[1024];
+	    while (inputStream.read(buffer) != -1)
+	    {
+	        outputStream.write(buffer);
+	    }
+	    outputStream.close();
+	    return outputStream.toByteArray();
+	}
+		
+	public void loadHashMap(){
+		  try
+		  {
+			  ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			  FileInputStream fileIn = new FileInputStream("Mazes.DB");
+			  
+			byte[] buffer = new byte[1024];
+			while (fileIn.read(buffer) != -1)
+			{
+			    outputStream.write(buffer);
+			}
+//			outputStream.close();
+			fileIn.close();
+			Error = Integer.toString(outputStream.toByteArray().length) ;
+			setChanged();
+			notifyObservers("Error");
+			
+			 byte[] dbDecompressed = decompressWithGZip(outputStream.toByteArray());
+			
+			 ByteArrayInputStream in = new ByteArrayInputStream(dbDecompressed);
+			 ObjectInputStream is = new ObjectInputStream(in);
+	         DB = (ConcurrentHashMap<String, Pair<Maze3d,Solution>>) is.readObject();
+		  }catch(Exception i)
+		  {
+		     i.printStackTrace();
+		  }
+	}
+	      
+	
 }

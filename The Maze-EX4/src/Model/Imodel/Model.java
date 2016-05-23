@@ -17,10 +17,13 @@ public interface Model {
 	public long getMazeSize(String name);
 	public double getMazeSizeinFile(String name)throws IOException;
 	public void solveMaze(String name, String theSearcher);
-	public String getSolution(String name);
+	public Solution getSolution(String name);
 	public void Exit();
 	public String getMazeGeneretedMsg();
 	public Maze3d getMaze(String name);
 	public String getExitMSG();
 	public String getSolutionMSG();
+	public String getError();
+	public void saveHashMap();
+	public void loadHashMap();
 }
