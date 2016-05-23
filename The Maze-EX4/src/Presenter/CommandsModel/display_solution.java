@@ -16,12 +16,20 @@ public class display_solution implements Command {
 	 */
 	@Override
 	public void doCommand(String[] args, Model model ,View view) throws IOException {
-		if (args.length != 1 )
-			throw new IllegalArgumentException("Inncorrect number of Arguments");
-		Solution sol =model.getSolution(args[0]);
-		if (sol != null){
-			view.displayMessage(sol.toString());
-		}
+		if (args.length != 1 ){
+	    	  view.displayMessage("Inncorrect number of Arguments\n");
+	      	  return;
+	      }
+		
+			try {
+				Solution sol =model.getSolution(args[0]);
+				view.displayMessage(sol.toString());
+			} catch (Exception e) {
+				view.displayMessage("\nNo solution for this maze");
+			}
+		
+				
+		
 		
 	}
 

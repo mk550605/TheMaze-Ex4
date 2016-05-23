@@ -16,8 +16,10 @@ public class display_Maze implements Command {
 	@Override
 	public void doCommand(String[] args , Model model ,View view) {	
 		
-		if (args.length != 1 )
-			throw new IllegalArgumentException("Inncorrect number of Arguments");
+		if (args.length != 1 ){
+	    	  view.displayMessage("Inncorrect number of Arguments\n");
+	      	  return;
+	      }
 		view.displayMessage(model.displayMaze3D(args[0]));
 	}
 

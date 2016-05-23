@@ -10,7 +10,7 @@ public class exit implements Command {
 
 
 private String Exit(){
-	return " the Program Finished";
+	return "the Program Finished";
 }
 /**
  * check that no file or Threads are working and close the Program

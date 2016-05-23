@@ -15,9 +15,15 @@ public class Load_Maze implements Command {
 	 */
 	@Override
 	public void doCommand(String[] args, Model model ,View view) throws IOException {
-		if (args.length != 2 )
-			throw new IllegalArgumentException("Inncorrect number of Arguments");
-		model.loadFromFile(args[1], args[0]);
+		if (args.length != 2 ){
+			view.displayMessage("Inncorrect number of Arguments\n");
+			return;
+		}
+		try {
+			model.loadFromFile(args[1], args[0]);
+		} catch (Exception e) {
+			view.displayMessage("Failed to Load File " + args[0]);
+		}
 	}
 
 

@@ -16,9 +16,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
+import org.ietf.jgss.Oid;
 
 import Model.IO.MyCompressorOutputStream;
 import Model.IO.MyDecompressorInputStream;
@@ -29,6 +30,7 @@ import Model.algorithms.Search.Searcher;
 import Model.algorithms.Search.Solution;
 import Model.algorithms.demo.MazeAdapter;
 import Model.algorithms.mazeGenerators.Maze3d;
+import Model.algorithms.mazeGenerators.myMaze3dGenerator;
 
 
 /**
@@ -43,16 +45,16 @@ public class MyModel extends Observable implements Model {
 //	protected ConcurrentHashMap<String, Maze3d> maze3dDB = new ConcurrentHashMap<String, Maze3d>();
 //	private ConcurrentHashMap<String, Solution> mazeSol = new ConcurrentHashMap<String, Solution>(); 
 	private ConcurrentHashMap<String,Pair<Maze3d, Solution>> DB = new  ConcurrentHashMap<String,Pair<Maze3d, Solution>>() ;
-	protected String mazeGeneretedMsg;
+	private String mazeGeneretedMsg;
 	private String solutionMSG;
-	protected String Error;
+	private String Error;
 	private String exitMSG;
 	ExecutorService executor = Executors.newFixedThreadPool(THREADNUM);
 	
 
 	/**
 	 * initialize the model
-	 * @param c - thecontroller
+	 *
 	 */
 	public MyModel() {
 	}
@@ -68,9 +70,16 @@ public class MyModel extends Observable implements Model {
 	public void generateMaze(String name , int cols , int rows , int floors) {
 		if(!DB.containsKey(name)){
 			try{
-				Callable<Maze3d> GenTask = new Gen3DMazeCallable( cols, rows, floors);
-				Future<Maze3d> theMaze = executor.submit(GenTask);
-				putToMazeDB(theMaze.get(), name);
+				executor.submit(new Callable<Maze3d>() {
+
+					@Override
+					public Maze3d call() throws Exception {
+						myMaze3dGenerator mg = new myMaze3dGenerator();
+						Maze3d theMaze = mg.generate(cols, rows, floors);
+						putToMazeDB(theMaze, name);
+						return null;
+					}
+				});
 				
 			}catch(Exception e){
 					Error= "problem to Generate 3Dmaze \n" +e;
@@ -107,13 +116,19 @@ public class MyModel extends Observable implements Model {
 						else{
 							ser = new DFS();
 						}
-					
-						Callable<Solution> genSol =new Solve3DMazeCallable(myAdapter,ser);
-						Future<Solution> solution = executor.submit(genSol);
-						DB.get(name).sol=solution.get();
-						solutionMSG = "the Solution of " + name + " is ready \n";
-						setChanged();
-						notifyObservers("SolutionisReady");
+						executor.submit(new Callable<Solution>() {
+
+							@Override
+							public Solution call() throws Exception {
+								Solution solution = ser.search(myAdapter);
+								DB.get(name).sol = solution;
+								solutionMSG = "the Solution of " + name + " is ready \n";
+								setChanged();
+								notifyObservers("SolutionisReady");
+								return null;
+							}
+						});
+						
 					}catch(Exception e){
 						Error= "problem to Solve 3Dmaze \n" +e;
 						setChanged();
@@ -145,6 +160,7 @@ public class MyModel extends Observable implements Model {
 			Error= "Maze does not exist  ";
 			setChanged();
 			notifyObservers("Error");
+			return " ";
 		}
 		Maze3d theMaze = DB.get(name).maze;
 		return theMaze.toString();
@@ -349,6 +365,12 @@ public class MyModel extends Observable implements Model {
 	 */
 	@Override
 	public double getMazeSizeinFile(String name) throws IOException {
+		if(!DB.containsKey(name)){
+			Error= "Maze does not exist  ";
+			setChanged();
+			notifyObservers("Error");
+			return 0;
+		}
 		saveToFile(name, "test.maz");
 		File file =new File("test.maz");
 		double bytes = 0;
@@ -358,7 +380,9 @@ public class MyModel extends Observable implements Model {
 		try{
 		file.delete();
 		}catch(Exception e){
-			System.out.println(e);
+			Error = "Feiled to delete temp file";
+			setChanged();
+			notifyObservers("Error");
 		}
 		return bytes;
 	}
@@ -391,77 +415,43 @@ public class MyModel extends Observable implements Model {
 		setChanged();
 		notifyObservers("MazeDone");
 	}
-	public void saveHashMap(){
-		 try
-	      {
-			 // Convert DB to byte array
-			 ByteArrayOutputStream dbByteOut = new ByteArrayOutputStream();
-	         ObjectOutputStream dbOut = new ObjectOutputStream(dbByteOut);
-	         dbOut.writeObject(DB);
-	         
-	         // Compress DB with GZip
-			 byte[] dbCompressed = compressWithGZip(dbByteOut.toByteArray());
-			 
-			 // Save compressed DB to file
-	         FileOutputStream fileOut = new FileOutputStream("Mazes.DB");
-	         ObjectOutputStream out = new ObjectOutputStream(fileOut);
-	         out.write(dbCompressed);
-	         out.close();
-	         fileOut.close();
-	      }catch(Exception e)
-	      {
-	          e.printStackTrace();
-	      }
+
+	@Override
+	public void saveHashMap() {
+		try {
+			ObjectOutputStream oOut = new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream("mazes.db")));
+			oOut.writeObject(DB);
+			oOut.close();
+		} catch (FileNotFoundException e) {
+			Error = "File Error";
+		      setChanged();
+		      notifyObservers("Error");
+		} catch (IOException e) {
+			  Error = "Error in IO since  the Hash Map on end";
+		      setChanged();
+		      notifyObservers("Error");
+		}
 	}
-	
-	public static byte[] compressWithGZip(byte[] array) throws Exception {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        GZIPOutputStream gzipOutputStream = new GZIPOutputStream(out);
-        gzipOutputStream.write(array);
-        gzipOutputStream.close();
-        return out.toByteArray();
-    }
- 
-	
-	public static byte[] decompressWithGZip(byte[] array) throws Exception{
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-	    GZIPInputStream inputStream = new GZIPInputStream(new ByteArrayInputStream(array));
-	    byte[] buffer = new byte[1024];
-	    while (inputStream.read(buffer) != -1)
-	    {
-	        outputStream.write(buffer);
-	    }
-	    outputStream.close();
-	    return outputStream.toByteArray();
-	}
+	@Override
+	public void loadHashMap() {
+		try {
+			ObjectInputStream oIn = new ObjectInputStream(new GZIPInputStream(new FileInputStream("mazes.db")));
+			DB = (ConcurrentHashMap<String, Pair<Maze3d, Solution>>) oIn.readObject();
+			
+		} catch (FileNotFoundException e) {
+			  Error = "File Not Found";
+		      setChanged();
+		      notifyObservers("Error");
+		} catch (ClassNotFoundException e) {
+			  Error = "Class Not Found";
+		      setChanged();
+		      notifyObservers("Error");
+		} catch (IOException e) {
+			  Error = "Error in IO since  the Hash Map on start";
+		      setChanged();
+		      notifyObservers("Error");
+		} 
 		
-	public void loadHashMap(){
-		  try
-		  {
-			  ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			  FileInputStream fileIn = new FileInputStream("Mazes.DB");
-			  
-			byte[] buffer = new byte[1024];
-			while (fileIn.read(buffer) != -1)
-			{
-			    outputStream.write(buffer);
-			}
-//			outputStream.close();
-			fileIn.close();
-			Error = Integer.toString(outputStream.toByteArray().length) ;
-			setChanged();
-			notifyObservers("Error");
-			
-			 byte[] dbDecompressed = decompressWithGZip(outputStream.toByteArray());
-			
-			 ByteArrayInputStream in = new ByteArrayInputStream(dbDecompressed);
-			 ObjectInputStream is = new ObjectInputStream(in);
-	         DB = (ConcurrentHashMap<String, Pair<Maze3d,Solution>>) is.readObject();
-		  }catch(Exception i)
-		  {
-		     i.printStackTrace();
-		  }
 	}
-	      
 	
 }

@@ -19,11 +19,14 @@ public class dir implements Command{
 	public void doCommand(String[] args , Model model  ,View view) {
 		File f = null;
 	      File[] paths;
-	      if (args.length != 1 )
-				throw new IllegalArgumentException("Inncorrect number of Arguments");
+	      if (args.length != 1 ){
+	    	  view.displayMessage("Inncorrect number of Arguments\n");
+	      	  return;
+	      }
 	      try{  
 	    	  if (args[0].equals("null")){
-					throw new IllegalArgumentException("Inncorrect number of Arguments");
+		    	  view.displayMessage("Inncorrect number of Arguments\n");
+		    	  return;
 	    	  } 
 			// create new file
 	         f = new File(args[0]);

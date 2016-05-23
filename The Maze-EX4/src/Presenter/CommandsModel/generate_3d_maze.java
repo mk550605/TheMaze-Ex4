@@ -13,19 +13,18 @@ public class generate_3d_maze implements Command   {
 	 */
 	@Override
 	public void doCommand(String[] args , Model model ,View view) {
-		if (args.length != 4 )
-			throw new IllegalArgumentException("Inncorrect number of Arguments");
+		if (args.length != 4 ){
+			view.displayMessage("Inncorrect number of Arguments\n");
+			return;
+		}
 			try{
 				model.generateMaze(args [0] ,  Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));	
 				}
 				 catch (Exception e) {
-						// TODO Auto-generated catch block
-						view.displayMessage(e.toString()); 
+						view.displayMessage("Failed to Generate 3D Maze");
+						 
 					}
-		//	}
-		//});
-		
-//		generateThread.start();
+
 		
 	}
 

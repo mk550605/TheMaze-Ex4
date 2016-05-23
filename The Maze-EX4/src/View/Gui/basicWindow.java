@@ -12,7 +12,7 @@ public abstract class basicWindow extends Observable implements Runnable{
 	
 	public basicWindow() {
 		this.display = new Display();
-		this.shell = new Shell();
+		this.shell = new Shell(display);
 	}
 	
 	public abstract void initWidgets();
