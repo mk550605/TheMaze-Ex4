@@ -1,14 +1,17 @@
 package View.Gui;
 
 import java.util.Observable;
-
+import java.util.Observer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-public abstract class basicWindow extends Observable implements Runnable{
+
+public abstract class basicWindow extends Observable implements Runnable {
 
 	protected Display display;
 	protected Shell shell;
+//	protected PopUpWindow popUpWindow;
+	
 	
 	public basicWindow() {
 		this.display = new Display();
@@ -30,6 +33,8 @@ public abstract class basicWindow extends Observable implements Runnable{
 			 display.dispose();
 
 	}
+	
+	
 
 	
 }

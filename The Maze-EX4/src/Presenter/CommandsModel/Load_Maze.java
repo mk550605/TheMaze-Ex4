@@ -22,7 +22,7 @@ public class Load_Maze implements Command {
 		try {
 			model.loadFromFile(args[1], args[0]);
 		} catch (Exception e) {
-			view.displayMessage("Failed to Load File " + args[0]);
+			view.displayMessage("Failed to Load File " + args[0] + ". " + e.toString());
 		}
 	}
 

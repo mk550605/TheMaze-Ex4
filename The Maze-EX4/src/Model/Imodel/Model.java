@@ -5,10 +5,11 @@ import java.io.IOException;
 import Model.algorithms.Search.Searcher;
 import Model.algorithms.Search.Solution;
 import Model.algorithms.mazeGenerators.Maze3d;
+import Presenter.Properties;
 
 public interface Model {
 	public void generateMaze(String name , int cols , int rows , int floors) throws Exception;
-	public String displayMaze3D(String name);
+	public Maze3d displayMaze3D(String name);
 	public int[][] displayCrossSectionByX(int x,String name);
 	public int[][] displayCrossSectionByY(int x,String name);
 	public int[][] displayCrossSectionByZ(int x, String name);
@@ -26,4 +27,5 @@ public interface Model {
 	public String getError();
 	public void saveHashMap();
 	public void loadHashMap();
+	public Properties getProp();
 }

@@ -1,6 +1,6 @@
 package Presenter.CommandsModel;
 
-import java.io.IOException;
+
 
 import Model.Imodel.Model;
 import Presenter.Command;
@@ -14,11 +14,15 @@ public class maze_size_in_mem implements Command{
 	 * @param view - View  of the Program
 	 */
 	@Override
-	public void doCommand(String[] args, Model model ,View view) throws IOException {
-		if (args.length != 1 )
-			throw new IllegalArgumentException("Inncorrect number of Arguments");
+	public void doCommand(String[] args, Model model ,View view) {
+		if (args.length != 1 ){
+			view.displayMessage("Inncorrect number of Arguments");
+			return;
+		}	
 		long size = model.getMazeSize(args[0]);
-		view.displayMessage(size + "bytes");
+		if(size == 0)
+			return;
+		view.displayMessage(size + " bytes");
 	}
 
 

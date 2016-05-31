@@ -1,6 +1,6 @@
 package Presenter.CommandsModel;
 
-import java.io.IOException;
+
 
 import Model.Imodel.Model;
 import Presenter.Command;
@@ -14,7 +14,7 @@ public class maze_size_in_file implements Command{
 	 * @param view - View  of the Program
 	 */
 	@Override
-	public void doCommand(String[] args, Model model ,View view) throws IOException {
+	public void doCommand(String[] args, Model model ,View view){
 		if (args.length != 1 ){
 			view.displayMessage("Inncorrect number of Arguments\n");
 			return;
@@ -23,8 +23,7 @@ public class maze_size_in_file implements Command{
 			double size = model.getMazeSizeinFile(args[0]);
 			view.displayMessage(size + " bytes");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			view.displayMessage("Error in find Maze size in file" + e.toString());
 		}
 	}
 

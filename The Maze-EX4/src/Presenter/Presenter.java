@@ -21,6 +21,7 @@ import Presenter.CommandsModel.maze_size_in_mem;
 import Presenter.CommandsModel.solve;
 import Presenter.CommandsView.DisplayErrorMSG;
 import Presenter.CommandsView.DisplayExitMSG;
+import Presenter.CommandsView.DisplayMazeGui;
 import Presenter.CommandsView.DisplayMazeReadyMessageCommand;
 import Presenter.CommandsView.DisplaySolutionMSG;
 import View.View;
@@ -30,12 +31,14 @@ public class Presenter implements Observer {
 	private View view;
 	private HashMap< String, Command> viewCommands  = new HashMap<String, Command>();;
 	private HashMap< String, Command> modelCommands  = new HashMap<String, Command>();;
+	public static Properties prop;
 	
-	
-	public Presenter(Model model, View view) {
+	public Presenter(Model model, View view){
 		this.model= model;
 		this.view =view;
 		buildCommands();
+		prop = this.model.getProp();
+		view.setProp(prop);
 	}
 	
 	private void buildCommands(){
@@ -56,6 +59,7 @@ public class Presenter implements Observer {
 		viewCommands.put("canExit", new DisplayExitMSG());
 		viewCommands.put("SolutionisReady", new DisplaySolutionMSG());
 		viewCommands.put("Error", new DisplayErrorMSG());
+		viewCommands.put("DisplayMazeGui", new DisplayMazeGui());
 	}
 	@Override
 	public void update(Observable o, Object arg) {
@@ -64,6 +68,7 @@ public class Presenter implements Observer {
 			Command command = viewCommands.get(CommandName);
 			try {
 				command.doCommand(null, model,view);
+//				view.displayMessage(String.valueOf(prop.getNumOfCols()));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -71,6 +76,8 @@ public class Presenter implements Observer {
 		}
 		else if (o==view) {
 			String commandLine = (String)arg;
+			commandLine = commandLine.trim();
+			commandLine = commandLine.toLowerCase();
 			String[] arr = commandLine.split(" ");
 			String commandName = arr[0];
 			String[] args = new String[arr.length - 1];

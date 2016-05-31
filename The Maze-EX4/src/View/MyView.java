@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
+import Model.algorithms.mazeGenerators.Maze3d;
 import Presenter.Command;
+import Presenter.Properties;
 import controller.Controller;
 /**
  * Define the bases of MyView
@@ -19,6 +21,7 @@ public class MyView extends Observable implements View, Observer {
 	private BufferedReader in;
 	private Writer out;
 	private Cli cli;	
+	private Properties prop = new Properties();
 		
 	public MyView(BufferedReader in, Writer out)
 	{		
@@ -56,7 +59,19 @@ public class MyView extends Observable implements View, Observer {
 	public void update(Observable o, Object arg) {
 		if (o == cli) {
 			this.setChanged();
-			this.notifyObservers(arg);			
+			this.notifyObservers(arg);
 		}		
+	}
+
+	@Override
+	public void setProp(Properties p) {
+		this.prop = p;
+		
+	}
+
+	@Override
+	public void displayMaze(Maze3d themaze) {
+		displayMessage(themaze.toString());
+		
 	}	
 }

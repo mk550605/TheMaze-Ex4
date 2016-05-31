@@ -43,7 +43,7 @@ public class display_cross_section implements Command {
 		}
 		 catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				view.displayMessage("Error to generate cross Section" + e.toString());
 			}
 		
 	

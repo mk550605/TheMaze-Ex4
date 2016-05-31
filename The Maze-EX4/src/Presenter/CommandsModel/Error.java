@@ -1,7 +1,5 @@
 package Presenter.CommandsModel;
 
-import java.io.IOException;
-
 import Model.Imodel.Model;
 import Presenter.Command;
 import View.View;
@@ -14,7 +12,7 @@ public class Error implements Command {
 	 * @param view - View  of the Program
 	 */
 	@Override
-	public void doCommand(String[] args, Model model, View view) throws IOException {
+	public void doCommand(String[] args, Model model, View view) {
 		view.displayMessage("Wrong input, please try again");
 
 	}

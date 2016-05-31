@@ -14,10 +14,16 @@ public class Save_Maze implements Command {
 	 * @param view - View  of the Program
 	 */
 	@Override
-	public void doCommand(String[] args, Model model ,View view) throws IOException {
-		if (args.length != 2 )
-			throw new IllegalArgumentException("Inncorrect number of Arguments");
-		model.saveToFile(args[0], args[1]);	
+	public void doCommand(String[] args, Model model ,View view) {
+		if (args.length != 2 ){
+			view.displayMessage("Inncorrect number of Arguments");
+			return;
+		}
+		try {
+			model.saveToFile(args[0], args[1]);
+		} catch (IOException e) {
+			view.displayMessage("Failed to save maze to file" + e.toString());
+		}	
 	}
 
 

@@ -21,7 +21,7 @@ public class generate_3d_maze implements Command   {
 				model.generateMaze(args [0] ,  Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));	
 				}
 				 catch (Exception e) {
-						view.displayMessage("Failed to Generate 3D Maze");
+						view.displayMessage("Failed to Generate 3D Maze" + e.toString());
 						 
 					}
 

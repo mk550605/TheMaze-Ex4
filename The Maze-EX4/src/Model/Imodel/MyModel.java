@@ -1,7 +1,5 @@
 package Model.Imodel;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -18,9 +16,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-
-import org.ietf.jgss.Oid;
-
 import Model.IO.MyCompressorOutputStream;
 import Model.IO.MyDecompressorInputStream;
 import Model.algorithms.Search.BestFS;
@@ -31,6 +26,9 @@ import Model.algorithms.Search.Solution;
 import Model.algorithms.demo.MazeAdapter;
 import Model.algorithms.mazeGenerators.Maze3d;
 import Model.algorithms.mazeGenerators.myMaze3dGenerator;
+import Presenter.Properties;
+import Presenter.XmlSerializer;
+
 
 
 /**
@@ -41,7 +39,7 @@ import Model.algorithms.mazeGenerators.myMaze3dGenerator;
  *
  */
 public class MyModel extends Observable implements Model {
-	private static int THREADNUM =20;
+//	private static int THREADNUM =20;
 //	protected ConcurrentHashMap<String, Maze3d> maze3dDB = new ConcurrentHashMap<String, Maze3d>();
 //	private ConcurrentHashMap<String, Solution> mazeSol = new ConcurrentHashMap<String, Solution>(); 
 	private ConcurrentHashMap<String,Pair<Maze3d, Solution>> DB = new  ConcurrentHashMap<String,Pair<Maze3d, Solution>>() ;
@@ -49,14 +47,24 @@ public class MyModel extends Observable implements Model {
 	private String solutionMSG;
 	private String Error;
 	private String exitMSG;
-	ExecutorService executor = Executors.newFixedThreadPool(THREADNUM);
-	
+	private Properties properties;
+	ExecutorService executor;
 
 	/**
 	 * initialize the model
 	 *
 	 */
 	public MyModel() {
+		loadHashMap();
+		try {
+			properties = new Properties();
+			properties = (Properties)XmlSerializer.loadSettings("config.xml", properties);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		executor = Executors.newFixedThreadPool(properties.getNumOfThreads());
+		
 	}
 	/**
 	 * Generate a 3D maze with myMaze3dGenerator algoritem
@@ -73,7 +81,7 @@ public class MyModel extends Observable implements Model {
 				executor.submit(new Callable<Maze3d>() {
 
 					@Override
-					public Maze3d call() throws Exception {
+					public Maze3d call()  {
 						myMaze3dGenerator mg = new myMaze3dGenerator();
 						Maze3d theMaze = mg.generate(cols, rows, floors);
 						putToMazeDB(theMaze, name);
@@ -146,6 +154,8 @@ public class MyModel extends Observable implements Model {
 				notifyObservers("Error");
 			}
 		}
+		
+		
 	public String getMazeGeneretedMsg(){
 		return mazeGeneretedMsg;
 	}
@@ -155,15 +165,15 @@ public class MyModel extends Observable implements Model {
  * @return - String of the maze
  */
 	@Override
-	public String displayMaze3D(String name) {
+	public Maze3d displayMaze3D(String name) {
 		if(!DB.containsKey(name)){
 			Error= "Maze does not exist  ";
 			setChanged();
 			notifyObservers("Error");
-			return " ";
+			return null;
 		}
 		Maze3d theMaze = DB.get(name).maze;
-		return theMaze.toString();
+		return theMaze;
 	}
 	
 	public Maze3d getMaze(String name){
@@ -325,7 +335,7 @@ public class MyModel extends Observable implements Model {
 			Error= "Maze does not exist  ";
 			setChanged();
 			notifyObservers("Error");
-			return -1;
+			return 0;
 		}
 		Maze3d theMaze = DB.get(name).maze;
 		int size = theMaze.getCols() * theMaze.getRows();
@@ -419,9 +429,12 @@ public class MyModel extends Observable implements Model {
 	@Override
 	public void saveHashMap() {
 		try {
-			ObjectOutputStream oOut = new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream("mazes.db")));
+			FileOutputStream Fout = new FileOutputStream("mazes.db");
+			ObjectOutputStream oOut = new ObjectOutputStream(new GZIPOutputStream(Fout));
 			oOut.writeObject(DB);
 			oOut.close();
+			Fout.flush();
+			Fout.close();
 		} catch (FileNotFoundException e) {
 			Error = "File Error";
 		      setChanged();
@@ -439,7 +452,7 @@ public class MyModel extends Observable implements Model {
 			DB = (ConcurrentHashMap<String, Pair<Maze3d, Solution>>) oIn.readObject();
 			
 		} catch (FileNotFoundException e) {
-			  Error = "File Not Found";
+			  Error = "File Not Found - can be new ENV";
 		      setChanged();
 		      notifyObservers("Error");
 		} catch (ClassNotFoundException e) {
@@ -452,6 +465,9 @@ public class MyModel extends Observable implements Model {
 		      notifyObservers("Error");
 		} 
 		
+	}
+	public Properties getProp(){
+		return properties;
 	}
 	
 }

@@ -1,6 +1,6 @@
 package Presenter.CommandsModel;
 
-import java.io.IOException;
+
 
 import Model.Imodel.Model;
 import Presenter.Command;
@@ -9,7 +9,7 @@ import View.View;
 public class Help implements Command{
 
 	@Override
-	public void doCommand(String[] args, Model model, View view) throws IOException {
+	public void doCommand(String[] args, Model model, View view){
 		view.displayMessage(helpFile());
 	}
 	

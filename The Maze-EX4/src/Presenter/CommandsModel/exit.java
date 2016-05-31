@@ -1,7 +1,5 @@
 package Presenter.CommandsModel;
 
-import java.io.IOException;
-
 import Model.Imodel.Model;
 import Presenter.Command;
 import View.View;
@@ -19,7 +17,7 @@ private String Exit(){
  * @param view - View  of the Program
  */
 @Override
-public void doCommand(String[] args, Model model ,View view) throws IOException {
+public void doCommand(String[] args, Model model ,View view) {
 	model.Exit();
 	view.displayMessage("\nsaving DB ...\n");
 	model.saveHashMap();

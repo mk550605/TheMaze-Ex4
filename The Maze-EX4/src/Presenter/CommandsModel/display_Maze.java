@@ -20,7 +20,7 @@ public class display_Maze implements Command {
 	    	  view.displayMessage("Inncorrect number of Arguments\n");
 	      	  return;
 	      }
-		view.displayMessage(model.displayMaze3D(args[0]));
+		view.displayMaze(model.displayMaze3D(args[0]));
 	}
 
 }

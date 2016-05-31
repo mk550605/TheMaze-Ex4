@@ -1,6 +1,5 @@
 package Presenter.CommandsModel;
 
-import java.io.IOException;
 
 import Model.Imodel.Model;
 import Model.algorithms.Search.Solution;
@@ -15,22 +14,21 @@ public class display_solution implements Command {
 	 * @param view - View  of the Program
 	 */
 	@Override
-	public void doCommand(String[] args, Model model ,View view) throws IOException {
+	public void doCommand(String[] args, Model model ,View view) {
 		if (args.length != 1 ){
 	    	  view.displayMessage("Inncorrect number of Arguments\n");
 	      	  return;
 	      }
+				try {
+					Solution sol =model.getSolution(args[0]);
+					view.displayMessage(sol.toString());
+				} catch (NullPointerException e) {
 		
-			try {
-				Solution sol =model.getSolution(args[0]);
-				view.displayMessage(sol.toString());
-			} catch (Exception e) {
-				view.displayMessage("\nNo solution for this maze");
-			}
-		
-				
-		
-		
+					
+				}catch (Exception e) {
+					view.displayMessage(e.toString());
+				}
+
 	}
 
 	
