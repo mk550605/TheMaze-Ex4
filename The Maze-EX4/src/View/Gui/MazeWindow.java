@@ -1,7 +1,5 @@
 package View.Gui;
 
-import javax.swing.text.Position;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -10,11 +8,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.MessageBox;
 
+import Model.algorithms.Search.Solution;
 import Model.algorithms.mazeGenerators.Maze3d;
+import Model.algorithms.mazeGenerators.Position;
 import Presenter.Properties;
-import Presenter.CommandsView.DisplayMazeGui;
 import View.View;
 import View.Gui.MazeDisplay.MazeDisplay;
 import View.Gui.MazeDisplay.TwoDMazeDisplay;
@@ -22,11 +22,17 @@ import View.Gui.MazeDisplay.TwoDMazeDisplay;
 public class MazeWindow extends basicWindow implements View{
 	protected Properties prop ;
 	private MazeDisplay mazeDisplay;
-	Model.algorithms.mazeGenerators.Position pos;
+	protected Position startPos;
+	protected Position goalPos;
 	Composite buttonsGroup ;
-	Button btnGenerateMaze;
-	Button btnSolveMaze;
-	Button btnDisplayMaze;
+	private Button btnGenerateMaze;
+	private Button btnSolveMaze;
+	private Button btnDisplayMaze;
+	private Button btnExit;
+	private Button btnHint;
+	protected String listOfMazes;
+	private Solution mazeSolution;
+	private String DisplaedMaze;
 	
 	public MazeWindow() {
 			
@@ -45,6 +51,10 @@ public class MazeWindow extends basicWindow implements View{
 		btnSolveMaze.setText("Solve Maze");
 		btnDisplayMaze = new Button(buttonsGroup, SWT.PUSH);
 		btnDisplayMaze.setText("DisplayMaze");
+		btnHint = new Button(buttonsGroup, SWT.PUSH);
+		btnHint.setText("Hint");
+		btnExit = new Button(buttonsGroup, SWT.PUSH);
+		btnExit.setText("Exit");
 		
 		mazeDisplay = new TwoDMazeDisplay(shell, SWT.BORDER);
 		mazeDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -74,9 +84,11 @@ public class MazeWindow extends basicWindow implements View{
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				String command ="display mic";
+				DisplayMazeWindow displayMazeWindow = new DisplayMazeWindow(shell); 
+				displayMazeWindow.initWidgets(listOfMazes);
 				setChanged();
-				notifyObservers(command);
+				DisplaedMaze = displayMazeWindow.getSelectedName();
+				notifyObservers("display " + DisplaedMaze);
 				
 			}
 			
@@ -92,15 +104,56 @@ public class MazeWindow extends basicWindow implements View{
 		btnSolveMaze.addSelectionListener(new SelectionListener() {	
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				PopUpWindow solveWindow = new SolveMazeWindow();
 				
-				solveWindow.initWidgets();
+				SolveMazeWindow solveWindow = new SolveMazeWindow(shell);
+				solveWindow.initWidgets(listOfMazes);
+				setChanged();
+				notifyObservers("solve "+ solveWindow.getMazeName() + " " + solveWindow.SelectedAlgo);
 			}
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
 				// TODO Auto-generated method stub	
 			}
-		}); 		
+		}); 
+		
+		btnHint.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				setChanged();
+				notifyObservers("display_solution " + DisplaedMaze);
+				for (int i = 0 ; i <mazeSolution.getSize(); i++){
+				
+//					mazeDisplay.setCharacterPosition(pos);
+				}
+				
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		btnExit.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				setChanged();
+				notifyObservers("exit");
+				shell.dispose();
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		
 	}
 	
 	
@@ -138,17 +191,31 @@ public class MazeWindow extends basicWindow implements View{
 			mazeDisplay = new TwoDMazeDisplay(shell,SWT.BORDER);
 			mazeDisplay.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
 		}
-		pos =  theMaze.getStartPosition();
+		startPos =  theMaze.getStartPosition();
+		goalPos = theMaze.getGoalPosition();
 		int[][] mazeData = null ;
 		try {
-			mazeData =theMaze.getCrossSectionByZ(pos.z);
+			mazeData =theMaze.getCrossSectionByZ(startPos.z);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		mazeDisplay.setMazeData(mazeData);
+		mazeDisplay.setMaze(theMaze);
+		mazeDisplay.setCharacterPosition(new Position(startPos.x, startPos.y, startPos.z));
+		mazeDisplay.setTrophyPosition(new Position(goalPos.x, goalPos.y, goalPos.z));
 		mazeDisplay.redraw();
+	}
+
+	@Override
+	public void setlistOfMazes(String listOfMazes) {
+		this.listOfMazes = listOfMazes;
 		
+	}
+
+	@Override
+	public void setSolution(Solution sol) {
+		this.mazeSolution = sol;
 	}
 
 	

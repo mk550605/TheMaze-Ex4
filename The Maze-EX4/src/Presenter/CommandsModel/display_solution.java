@@ -21,6 +21,7 @@ public class display_solution implements Command {
 	      }
 				try {
 					Solution sol =model.getSolution(args[0]);
+					view.setSolution(sol);
 					view.displayMessage(sol.toString());
 				} catch (NullPointerException e) {
 		

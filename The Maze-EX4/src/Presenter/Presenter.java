@@ -39,6 +39,7 @@ public class Presenter implements Observer {
 		buildCommands();
 		prop = this.model.getProp();
 		view.setProp(prop);
+		view.setlistOfMazes(model.getMazesList());
 	}
 	
 	private void buildCommands(){

@@ -3,6 +3,7 @@ package View;
 import java.io.IOException;
 import java.util.HashMap;
 
+import Model.algorithms.Search.Solution;
 import Model.algorithms.mazeGenerators.Maze3d;
 import Presenter.Command;
 import Presenter.Properties;
@@ -17,4 +18,6 @@ public interface View {
 	void start();	
 	void setProp(Properties p);
 	void displayMaze(Maze3d theMaze);
+	void setlistOfMazes(String listOfMazes);
+	void setSolution(Solution sol);
 }

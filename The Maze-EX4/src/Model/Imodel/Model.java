@@ -8,6 +8,7 @@ import Model.algorithms.mazeGenerators.Maze3d;
 import Presenter.Properties;
 
 public interface Model {
+	public String getMazesList();
 	public void generateMaze(String name , int cols , int rows , int floors) throws Exception;
 	public Maze3d displayMaze3D(String name);
 	public int[][] displayCrossSectionByX(int x,String name);

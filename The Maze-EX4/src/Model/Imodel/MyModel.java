@@ -470,4 +470,14 @@ public class MyModel extends Observable implements Model {
 		return properties;
 	}
 	
+	@Override
+	public String getMazesList() {
+		StringBuilder listOfMazes = new StringBuilder();
+		for ( String key : DB.keySet() ) {
+			listOfMazes.append(key);
+			listOfMazes.append(" ");
+		}
+		return listOfMazes.toString();
+	}
+	
 }

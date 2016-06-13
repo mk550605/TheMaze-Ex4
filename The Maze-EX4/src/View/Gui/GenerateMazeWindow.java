@@ -22,9 +22,9 @@ public class GenerateMazeWindow extends Dialog {
 //	private String rows = Integer.toString(properties.getNumOfRows());
 //	private String floors = Integer.toString(properties.getNumOfFloors());
 
-	private String cols = "11";
-	private String rows = "11";
-	private String floors = "11";
+	private String cols = "41";
+	private String rows = "41";
+	private String floors = "1";
 	private String result = "Cancel";
 	/**
 	 * @param prop 

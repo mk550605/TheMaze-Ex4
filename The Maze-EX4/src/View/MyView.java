@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
+import Model.algorithms.Search.Solution;
 import Model.algorithms.mazeGenerators.Maze3d;
 import Presenter.Command;
 import Presenter.Properties;
@@ -72,6 +73,18 @@ public class MyView extends Observable implements View, Observer {
 	@Override
 	public void displayMaze(Maze3d themaze) {
 		displayMessage(themaze.toString());
+		
+	}
+
+	@Override
+	public void setlistOfMazes(String listOfMazes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setSolution(Solution sol) {
+		// TODO Auto-generated method stub
 		
 	}	
 }

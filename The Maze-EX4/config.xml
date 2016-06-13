@@ -1,0 +1,15 @@
+<Properties>
+  <numOfcols-In-Maze>11</numOfcols-In-Maze>
+  <numOfRows-In-Maze>11</numOfRows-In-Maze>
+  <numOfFloors-In-Maze>11</numOfFloors-In-Maze>
+  <numOfThreads>20</numOfThreads>
+  <AlgorithmForMazeGeneration>myMaze3dGenerator</AlgorithmForMazeGeneration>
+  <AlgorithmForMazeSolution>Bestfs</AlgorithmForMazeSolution>
+  <straightMoveScore>10</straightMoveScore>
+  <up>up</up>
+  <down>down</down>
+  <left>left</left>
+  <right>right</right>
+  <forward>forward</forward>
+  <backwards>backwards</backwards>
+</Properties>
