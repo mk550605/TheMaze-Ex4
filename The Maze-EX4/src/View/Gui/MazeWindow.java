@@ -8,10 +8,15 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 
 import Model.algorithms.Search.Solution;
+import Model.algorithms.Search.State;
 import Model.algorithms.mazeGenerators.Maze3d;
 import Model.algorithms.mazeGenerators.Position;
 import Presenter.Properties;
@@ -24,12 +29,13 @@ public class MazeWindow extends basicWindow implements View{
 	private MazeDisplay mazeDisplay;
 	protected Position startPos;
 	protected Position goalPos;
-	Composite buttonsGroup ;
+	private Composite buttonsGroup ;
 	private Button btnGenerateMaze;
 	private Button btnSolveMaze;
 	private Button btnDisplayMaze;
 	private Button btnExit;
 	private Button btnHint;
+	private Button btnSettings;
 	protected String listOfMazes;
 	private Solution mazeSolution;
 	private String DisplaedMaze;
@@ -40,6 +46,66 @@ public class MazeWindow extends basicWindow implements View{
 
 	@Override
 	public void initWidgets() {
+		
+
+		shell.addListener(SWT.Close, new Listener() {
+			
+			@Override
+			public void handleEvent(Event event) {
+				int style = SWT.APPLICATION_MODAL | SWT.YES | SWT.NO;
+	            MessageBox messageBox = new MessageBox(shell, style);
+	            messageBox.setText("Exit");
+	            messageBox.setMessage("Close the 3DMaze? All your information will be Lost");
+	            event.doit = messageBox.open() == SWT.YES;
+			}
+		});
+		
+		// menu starts
+		
+		Menu m = new Menu(shell, SWT.BAR);
+	    MenuItem file = new MenuItem(m, SWT.CASCADE);
+	    file.setText("File");
+	    Menu filemenu = new Menu(shell, SWT.DROP_DOWN);
+	    file.setMenu(filemenu);
+	    MenuItem SettingsItem = new MenuItem(filemenu, SWT.PUSH);
+	    SettingsItem.setText("Setting");
+	    MenuItem exitItem = new MenuItem(filemenu, SWT.PUSH);
+	    exitItem.setText("Exit");
+	    shell.setMenuBar(m);
+	    
+	    SettingsItem.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				uptadeXML();
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	    
+	    exitItem.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				exit();
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		// menu ends
+	    
+		// button and grid for main window
+	    shell.setText("Maze 3D Java Project");
 		GridLayout grid = new GridLayout(2, false);
 		shell.setLayout(grid);
 		buttonsGroup = new Composite(shell, SWT.BORDER);
@@ -53,24 +119,29 @@ public class MazeWindow extends basicWindow implements View{
 		btnDisplayMaze.setText("DisplayMaze");
 		btnHint = new Button(buttonsGroup, SWT.PUSH);
 		btnHint.setText("Hint");
+		btnSettings = new Button(buttonsGroup, SWT.PUSH);
+		btnSettings.setText("Settings");
 		btnExit = new Button(buttonsGroup, SWT.PUSH);
 		btnExit.setText("Exit");
+		// button ends.
 		
+		//Canvas Display maze
 		mazeDisplay = new TwoDMazeDisplay(shell, SWT.BORDER);
 		mazeDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
+		
+		// Button Selection Listeners
 		
 		btnGenerateMaze.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				GenerateMazeWindow generateWindow = new GenerateMazeWindow(shell  );
-				generateWindow.setProperties(prop);
-				generateWindow.initWidgets();
-//				System.out.println("generate_3d_maze " + generateWindow.getName() + " " + generateWindow.getCols() 
-//				 + " " + generateWindow.getRows() + " "+ generateWindow.getFloors());
-				 setChanged();
-				 notifyObservers("generate_3d_maze " + generateWindow.getName() + " " + generateWindow.getCols() 
-				 + " " + generateWindow.getRows() + " "+ generateWindow.getFloors() );
-				
+				generateWindow.initWidgets(prop);
+				if ( generateWindow.ok ==1){
+					 setChanged();
+					 notifyObservers("generate_3d_maze " + generateWindow.getName() + " " + generateWindow.getCols() 
+					 + " " + generateWindow.getRows() + " "+ generateWindow.getFloors() );
+				}
 			}
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -86,10 +157,11 @@ public class MazeWindow extends basicWindow implements View{
 			public void widgetSelected(SelectionEvent arg0) {
 				DisplayMazeWindow displayMazeWindow = new DisplayMazeWindow(shell); 
 				displayMazeWindow.initWidgets(listOfMazes);
-				setChanged();
-				DisplaedMaze = displayMazeWindow.getSelectedName();
-				notifyObservers("display " + DisplaedMaze);
-				
+				if (displayMazeWindow.ok ==1){
+					setChanged();
+					DisplaedMaze = displayMazeWindow.getSelectedName();
+					notifyObservers("display " + DisplaedMaze);
+				}
 			}
 			
 			@Override
@@ -107,8 +179,11 @@ public class MazeWindow extends basicWindow implements View{
 				
 				SolveMazeWindow solveWindow = new SolveMazeWindow(shell);
 				solveWindow.initWidgets(listOfMazes);
-				setChanged();
-				notifyObservers("solve "+ solveWindow.getMazeName() + " " + solveWindow.SelectedAlgo);
+				if(solveWindow.ok == 1 ){
+					setChanged();
+					notifyObservers("solve "+ solveWindow.getMazeName() + " " + solveWindow.SelectedAlgo);
+			
+				}
 			}
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -120,13 +195,24 @@ public class MazeWindow extends basicWindow implements View{
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+				Position curpos = mazeDisplay.getCharacter().getPos();
 				setChanged();
-				notifyObservers("display_solution " + DisplaedMaze);
-				for (int i = 0 ; i <mazeSolution.getSize(); i++){
+				notifyObservers("hint " + DisplaedMaze + " " + curpos.x +
+						" " +curpos.y + " " + curpos.z) ;
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
 				
-//					mazeDisplay.setCharacterPosition(pos);
-				}
-				
+			}
+		});
+		
+		btnSettings.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				uptadeXML();
 				
 			}
 			
@@ -136,13 +222,12 @@ public class MazeWindow extends basicWindow implements View{
 				
 			}
 		});
+		
 		btnExit.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				setChanged();
-				notifyObservers("exit");
-				shell.dispose();
+				exit();
 				
 			}
 			
@@ -157,8 +242,21 @@ public class MazeWindow extends basicWindow implements View{
 	}
 	
 	
-
-
+	private void exit(){
+		setChanged();
+		notifyObservers("exit");
+		shell.dispose();
+	}
+	
+	private void uptadeXML(){
+		SettingWindow settingswindow = new SettingWindow(shell);
+		settingswindow.initWidgets(prop);
+		if (settingswindow.ok == 1){
+			setChanged();
+			notifyObservers("updatexml");
+		}
+	}
+	
 	@Override
 	public void displayMessage(String message) {
 		display.syncExec(new Runnable() {
@@ -216,6 +314,49 @@ public class MazeWindow extends basicWindow implements View{
 	@Override
 	public void setSolution(Solution sol) {
 		this.mazeSolution = sol;
+	}
+
+	@Override
+	public void startHint() {
+		Thread t = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				for(State s : mazeSolution.getStates()){
+					Position oldPos = mazeDisplay.getCharacter().getPos();
+					mazeDisplay.setCharacterPosition(stateToPos(s.getDescription()));
+					if(oldPos.z !=mazeDisplay.getCharacter().getPos().z){
+						mazeDisplay.updateMazeDate();
+					}
+					display.syncExec(new Runnable() {	
+						@Override
+						public void run() {
+							mazeDisplay.redraw();
+							mazeDisplay.checkIfGoal(mazeDisplay.getCharacter().getPos());							
+						}
+						
+					});
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+			}
+		});
+		t.start();
+	}
+	
+	private Position stateToPos(String stateDes){
+		stateDes = stateDes.replace("{", "");
+		stateDes = stateDes.replace("}","");
+		String[] newstr = stateDes.split(",");
+		Position pos = new Position(Integer.parseInt(newstr[0]),
+				Integer.parseInt(newstr[1]),Integer.parseInt(newstr[2]));
+		return pos;
+		
 	}
 
 	

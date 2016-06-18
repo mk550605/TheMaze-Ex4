@@ -15,6 +15,7 @@ public class DisplayMazeWindow extends org.eclipse.swt.widgets.Dialog {
 
 	private String[] mazeName;
 	private String selectedName;
+	public int ok = 0;
 	
 	
 	public DisplayMazeWindow(Shell parent) {
@@ -64,6 +65,7 @@ public class DisplayMazeWindow extends org.eclipse.swt.widgets.Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				selectedName = mazeName[comboMazes.getSelectionIndex()];
+				ok = 1;
 				popUpShell.close();
 				
 			}

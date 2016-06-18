@@ -8,6 +8,7 @@ import java.util.Observer;
 import Model.Imodel.Model;
 import Presenter.CommandsModel.Error;
 import Presenter.CommandsModel.Help;
+import Presenter.CommandsModel.Hint;
 import Presenter.CommandsModel.Load_Maze;
 import Presenter.CommandsModel.Save_Maze;
 import Presenter.CommandsModel.dir;
@@ -19,11 +20,14 @@ import Presenter.CommandsModel.generate_3d_maze;
 import Presenter.CommandsModel.maze_size_in_file;
 import Presenter.CommandsModel.maze_size_in_mem;
 import Presenter.CommandsModel.solve;
+import Presenter.CommandsModel.updatexml;
 import Presenter.CommandsView.DisplayErrorMSG;
 import Presenter.CommandsView.DisplayExitMSG;
 import Presenter.CommandsView.DisplayMazeGui;
 import Presenter.CommandsView.DisplayMazeReadyMessageCommand;
 import Presenter.CommandsView.DisplaySolutionMSG;
+import Presenter.CommandsView.hintDisplay;
+import Presenter.CommandsView.updateviewxml;
 import View.View;
 
 public class Presenter implements Observer {
@@ -31,14 +35,14 @@ public class Presenter implements Observer {
 	private View view;
 	private HashMap< String, Command> viewCommands  = new HashMap<String, Command>();;
 	private HashMap< String, Command> modelCommands  = new HashMap<String, Command>();;
-	public static Properties prop;
+	public  Properties prop;
 	
 	public Presenter(Model model, View view){
 		this.model= model;
 		this.view =view;
 		buildCommands();
-		prop = this.model.getProp();
-		view.setProp(prop);
+//		prop = this.model.getProp();
+		view.setProp(model.getProp());
 		view.setlistOfMazes(model.getMazesList());
 	}
 	
@@ -56,11 +60,15 @@ public class Presenter implements Observer {
 		modelCommands.put("exit", new exit());
 		modelCommands.put("help", new Help());
 		modelCommands.put("Error", new Error());
+		modelCommands.put("updatexml", new updatexml());
+		modelCommands.put("hint", new Hint());
 		viewCommands.put("MazeDone", new DisplayMazeReadyMessageCommand());
 		viewCommands.put("canExit", new DisplayExitMSG());
 		viewCommands.put("SolutionisReady", new DisplaySolutionMSG());
 		viewCommands.put("Error", new DisplayErrorMSG());
 		viewCommands.put("DisplayMazeGui", new DisplayMazeGui());
+		viewCommands.put("updatenewxml", new updateviewxml());
+		viewCommands.put("hintReady", new hintDisplay());
 	}
 	@Override
 	public void update(Observable o, Object arg) {

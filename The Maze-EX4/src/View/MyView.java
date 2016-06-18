@@ -86,5 +86,11 @@ public class MyView extends Observable implements View, Observer {
 	public void setSolution(Solution sol) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void startHint() {
+		
+		
 	}	
 }

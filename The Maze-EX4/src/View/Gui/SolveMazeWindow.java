@@ -18,7 +18,7 @@ public class SolveMazeWindow extends Dialog {
 		super(parent);
 		// TODO Auto-generated constructor stub
 	}
-
+	public int ok =0;
 	private String[] mazeName;
 	private String[] Algotithem = { "Dfs", "Bestfs", "BreadthFS" };
 	int SelectedName;

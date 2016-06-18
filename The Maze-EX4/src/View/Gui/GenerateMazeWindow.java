@@ -18,14 +18,11 @@ import Presenter.Properties;
 public class GenerateMazeWindow extends Dialog {
 	private Properties properties;
 	private String name =null;
-//	private String cols = Integer.toString(this.properties.getNumOfCols());
-//	private String rows = Integer.toString(properties.getNumOfRows());
-//	private String floors = Integer.toString(properties.getNumOfFloors());
-
-	private String cols = "41";
-	private String rows = "41";
-	private String floors = "1";
+	private String cols ;
+	private String rows ;
+	private String floors;
 	private String result = "Cancel";
+	public int ok =0;
 	/**
 	 * @param prop 
 	 * @param dialog
@@ -34,15 +31,11 @@ public class GenerateMazeWindow extends Dialog {
 		super(parent);
 	}
 	
-	public void setProperties(Properties prop){
-		this.properties = prop;
-	}
-
-
 //	protected Shell dialog;
 	
 	
-	public String initWidgets() {
+	public String initWidgets(Properties prop) {
+		this.properties = prop;
 		Shell parent = getParent();
 	    Shell dialog = new Shell(parent, SWT.DIALOG_TRIM
 	        | SWT.APPLICATION_MODAL);	    
@@ -58,32 +51,36 @@ public class GenerateMazeWindow extends Dialog {
 		gd.widthHint = 100;
 		labName.setLayoutData (gd);
 		Text txtName = new Text(dialog, SWT.BEGINNING);
-		txtName.setText("Name of Maze");
+		txtName.setText("Name_of_Maze");
 		txtName.setLayoutData(gridData);
 		Label labCols = new Label(dialog, SWT.BOLD);
 		labCols.setText("num of cols");
 		labCols.setVisible(true);
 		Text txtCols = new Text(dialog, SWT.BEGINNING);
-		txtCols.setText(cols);
+		txtCols.setText(Integer.toString(properties.getNumOfCols()));
 		txtCols.setLayoutData(gridData);
 		Label labRows = new Label(dialog, SWT.BOLD);
 		labRows.setText("num of Rows");
 		labRows.setVisible(true);
 		Text txtRows = new Text(dialog, SWT.BEGINNING);
-		txtRows.setText(rows);
+		txtRows.setText(Integer.toString(properties.getNumOfRows()));
 		txtRows.setLayoutData(gridData);
 		Label labFloors = new Label(dialog, SWT.BOLD);
 		labFloors.setText("num of Floors");
 		labFloors.setVisible(true);
 		Text txtFloors = new Text(dialog, SWT.BEGINNING);
-		txtFloors.setText(floors);
+		txtFloors.setText(Integer.toString(properties.getNumOfFloors()));
 		txtFloors.setEnabled(true);
 		txtFloors.setLayoutData(gridData);
 		Button btnOK = new Button(dialog, SWT.PUSH);
 		btnOK.setText("OK");
+		GridData bgd = new GridData ();
+		bgd.widthHint = 100;
+		bgd.heightHint =25;
+		btnOK.setLayoutData(bgd);
 		Button btnCancel = new Button(dialog, SWT.PUSH);
 		btnCancel.setText("Cancel");
-		
+		btnCancel.setLayoutData(bgd);
 		
 		
 		
@@ -109,6 +106,7 @@ public class GenerateMazeWindow extends Dialog {
 				 cols = txtCols.getText();
 				 rows = txtRows.getText();
 				 floors = txtFloors.getText();
+				 ok =1;
 				 dialog.close();
 				
 			}

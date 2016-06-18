@@ -28,6 +28,12 @@ public abstract class  MazeDisplay extends Canvas {
 	protected abstract void goBackward();
 
 	protected abstract void goUp();
+	
+	public abstract void checkIfGoal(Position pos);
+
+	public GameCharacter getCharacter() {
+		return character;
+	}
 
 	protected abstract void goDown();
 
@@ -37,6 +43,15 @@ public abstract class  MazeDisplay extends Canvas {
 	
 	public void setMazeData (int[][] mazeData){
 		this.mazeData =mazeData;
+	}
+	public void updateMazeDate(){
+		try {
+			this.mazeData = themaze.getCrossSectionByZ(character.getPos().z);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 	
 	public void setCharacterPosition(Position pos) {

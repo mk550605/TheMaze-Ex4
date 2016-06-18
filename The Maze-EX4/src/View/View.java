@@ -14,10 +14,11 @@ import Presenter.Properties;
  *
  */
 public interface View {
-	void displayMessage(String message);
-	void start();	
-	void setProp(Properties p);
-	void displayMaze(Maze3d theMaze);
-	void setlistOfMazes(String listOfMazes);
-	void setSolution(Solution sol);
+	public void displayMessage(String message);
+	public void start();	
+	public void setProp(Properties p);
+	public void displayMaze(Maze3d theMaze);
+	public void setlistOfMazes(String listOfMazes);
+	public void setSolution(Solution sol);
+	public void startHint();
 }

@@ -25,6 +25,7 @@ import Model.algorithms.Search.Searcher;
 import Model.algorithms.Search.Solution;
 import Model.algorithms.demo.MazeAdapter;
 import Model.algorithms.mazeGenerators.Maze3d;
+import Model.algorithms.mazeGenerators.Position;
 import Model.algorithms.mazeGenerators.myMaze3dGenerator;
 import Presenter.Properties;
 import Presenter.XmlSerializer;
@@ -48,8 +49,13 @@ public class MyModel extends Observable implements Model {
 	private String Error;
 	private String exitMSG;
 	private Properties properties;
-	ExecutorService executor;
+	private ExecutorService executor;
+	private String lastHint;
+	
 
+	public String getLastHint() {
+		return lastHint;
+	}
 	/**
 	 * initialize the model
 	 *
@@ -152,6 +158,27 @@ public class MyModel extends Observable implements Model {
 				Error= "Maze does not exist \n" ;
 				setChanged();
 				notifyObservers("Error");
+			}
+		}
+		
+		public void hint (String name , String x,String y,String z){
+			if(DB.containsKey(name)){
+//				if(DB.get(name).sol==null){
+//					try{
+						Position currCharPos = new Position(Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(z));
+						Maze3d theMaze = DB.get(name).maze;
+						Position origStartPos = theMaze.getStartPosition();
+						theMaze.setStartPosition(currCharPos);
+						MazeAdapter myAdapter = new MazeAdapter(theMaze);
+						Searcher ser = new BestFS();
+						Solution solution = ser.search(myAdapter);
+						DB.get(name).sol = solution;
+						theMaze.setStartPosition(origStartPos);
+						lastHint = name;
+						setChanged();
+						notifyObservers("hintReady");
+//					}
+//				}
 			}
 		}
 		
@@ -479,5 +506,19 @@ public class MyModel extends Observable implements Model {
 		}
 		return listOfMazes.toString();
 	}
+	@Override
+	public void updatexml() {
+	try{
+		properties = (Properties)XmlSerializer.loadSettings("config.xml", properties);
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	setChanged();
+	notifyObservers("updatenewxml");
+		
+	}
+	
+	
 	
 }

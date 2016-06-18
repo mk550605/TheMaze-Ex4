@@ -5,6 +5,7 @@ import java.io.IOException;
 import Model.algorithms.Search.Searcher;
 import Model.algorithms.Search.Solution;
 import Model.algorithms.mazeGenerators.Maze3d;
+import Model.algorithms.mazeGenerators.Position;
 import Presenter.Properties;
 
 public interface Model {
@@ -29,4 +30,7 @@ public interface Model {
 	public void saveHashMap();
 	public void loadHashMap();
 	public Properties getProp();
+	public void updatexml();
+	public void hint (String name , String x , String y ,String z );
+	public String getLastHint();
 }
