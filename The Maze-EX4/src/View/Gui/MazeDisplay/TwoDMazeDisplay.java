@@ -8,18 +8,34 @@ import org.eclipse.swt.widgets.Shell;
 
 import Model.algorithms.mazeGenerators.Position;
 import View.View;
-
+/**
+ * 
+ *  @author Michael Kratik & Tzipi Cabiri
+ *  define the GUIView of the maze
+ *  
+ *
+ */
 public class TwoDMazeDisplay extends MazeDisplay {
 	private String[] updown;
 	private Position newPos ;
 	private Position p ;
 	private int count =0;
 	
+	/**
+	 * CTOR
+	 * @param parent
+	 * @param style
+	 */
 	public TwoDMazeDisplay(Composite parent, int style) {
 		super(parent, style);
 		setBackground(new Color(null, 255,255,255));
 	}
 
+	/**
+	 * drawing the maze 
+	 * find all the walls and the updown places and give them a unic color
+	 * placing the character and the trophy 
+	 */
 	@Override
 	protected void drawMaze(PaintEvent e ) {
 		if (mazeData == null)
@@ -42,6 +58,9 @@ public class TwoDMazeDisplay extends MazeDisplay {
 			      			p=themaze.getStartPosition();
 			      			count++;
 			      			}
+			        	  else if(p.z != character.getPos().z){
+			        		  p.z = character.getPos().z;
+			        	  }
 		        	  p.x = i;
 		        	  p.y = j;
 		        	  updown = themaze.getPossibleMoves(p);
@@ -62,6 +81,9 @@ public class TwoDMazeDisplay extends MazeDisplay {
 			      
 			}
 
+	/**
+	 * Character go left
+	 */
 	@Override
 	protected void goLeft() {
 		
@@ -76,7 +98,10 @@ public class TwoDMazeDisplay extends MazeDisplay {
 			}
 		}
 	}
-
+	
+	/**
+	 * Character go right
+	 */
 	@Override
 	protected void goRight() {
 		Position pos = character.getPos();
@@ -91,6 +116,9 @@ public class TwoDMazeDisplay extends MazeDisplay {
 		}
 }
 
+	/**
+	 * Character go forward
+	 */
 	@Override
 	protected void goForward() {
 		Position pos = character.getPos();
@@ -104,6 +132,9 @@ public class TwoDMazeDisplay extends MazeDisplay {
 			}
 	}
 
+	/**
+	 * Character go backward
+	 */
 	@Override
 	protected void goBackward() {
 		Position pos = character.getPos();
@@ -117,6 +148,9 @@ public class TwoDMazeDisplay extends MazeDisplay {
 			}
 	}
 
+	/**
+	 * Character go up
+	 */
 	@Override
 	protected void goUp() {
 		Position pos = character.getPos();
@@ -138,6 +172,9 @@ public class TwoDMazeDisplay extends MazeDisplay {
 		}
 	}
 
+	/**
+	 * Character go down
+	 */
 	@Override
 	protected void goDown() {
 		Position pos = character.getPos();		
@@ -160,6 +197,9 @@ public class TwoDMazeDisplay extends MazeDisplay {
 		}
 	}
 	
+	/**
+	 * check if the Character get the goal Postion
+	 */
 	public void checkIfGoal(Position pos){
 		Position goalpos = themaze.getGoalPosition();
 		if (pos.equals(goalpos)){

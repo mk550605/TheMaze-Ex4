@@ -10,18 +10,35 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-
+/**
+* @author Michael Kratik & Tzipi Cabiri
+* Display Maze gui window
+* getting information from user about what maze to display .
+* 
+*
+*/
 public class DisplayMazeWindow extends org.eclipse.swt.widgets.Dialog {
 
 	private String[] mazeName;
 	private String selectedName;
 	public int ok = 0;
 	
-	
+	/**
+	 * CTOR
+	 * @param parent
+	 */
 	public DisplayMazeWindow(Shell parent) {
 		super(parent);
 		// TODO Auto-generated constructor stub
 	}
+	
+	/**
+	 * init the window 
+	 * define the label and text on screen
+	 * define two buttons of ok and cancel
+	 * Handle the buttons push
+	 * @param listOfMazes
+	 */
 	public void initWidgets(String listOfMazes) {
 		Shell parent = getParent();
 	    Shell popUpShell = new Shell(parent, SWT.DIALOG_TRIM

@@ -35,14 +35,11 @@ import Presenter.XmlSerializer;
 /**
  * Class Define all the Project Functionality available on the maze3d system logic 
  * @author Michael Kratik & Tzipi Cabiri 
- * @version 1.4
+ * @version 1.5
  * 
  *
  */
 public class MyModel extends Observable implements Model {
-//	private static int THREADNUM =20;
-//	protected ConcurrentHashMap<String, Maze3d> maze3dDB = new ConcurrentHashMap<String, Maze3d>();
-//	private ConcurrentHashMap<String, Solution> mazeSol = new ConcurrentHashMap<String, Solution>(); 
 	private ConcurrentHashMap<String,Pair<Maze3d, Solution>> DB = new  ConcurrentHashMap<String,Pair<Maze3d, Solution>>() ;
 	private String mazeGeneretedMsg;
 	private String solutionMSG;
@@ -160,11 +157,16 @@ public class MyModel extends Observable implements Model {
 				notifyObservers("Error");
 			}
 		}
-		
+		/**
+		 * Solving the maze from the point the character is on at this time.
+		 * @param maze name
+		 * @param x - X pos of character
+		 * @param y - y pos of character
+		 * @param z - z pos of character
+		 */
 		public void hint (String name , String x,String y,String z){
 			if(DB.containsKey(name)){
-//				if(DB.get(name).sol==null){
-//					try{
+
 						Position currCharPos = new Position(Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(z));
 						Maze3d theMaze = DB.get(name).maze;
 						Position origStartPos = theMaze.getStartPosition();
@@ -177,8 +179,6 @@ public class MyModel extends Observable implements Model {
 						lastHint = name;
 						setChanged();
 						notifyObservers("hintReady");
-//					}
-//				}
 			}
 		}
 		
@@ -424,10 +424,18 @@ public class MyModel extends Observable implements Model {
 		return bytes;
 	}
 
-	
+	/**
+	 * get the String SolutionMSG
+	 * 
+	 */
 	public String getSolutionMSG(){
 		return solutionMSG;
 	}
+	
+	/**
+	 * Exit from the Program
+	 * closing all the Threads
+	 */
 	@SuppressWarnings("deprecation")
 	@Override
 	public void Exit() {
@@ -435,24 +443,42 @@ public class MyModel extends Observable implements Model {
 		exitMSG = "all Thread are stoped";
 		setChanged();
 		notifyObservers("canExit");
-		//thecontroller.getNotifyDone("all Thread are stoped");
 		
 	}
+	
+	/**
+	 * get the String exitMSG
+	 * 
+	 */
 	public String getExitMSG(){
 		return exitMSG;
 	}
 	
+	/**
+	 * get the String Error
+	 * 
+	 */
 	public String getError(){
 		return Error;
 	}
 	
+	/**
+	 * Fill the DB with a new maze
+	 * @param themaze
+	 * @param name
+	 */
 	protected void putToMazeDB(Maze3d themaze, String name){
 		DB.put(name, new Pair<Maze3d, Solution>(themaze, null));
 		mazeGeneretedMsg= "the maze " + name + " is ready \n";
 		setChanged();
 		notifyObservers("MazeDone");
 	}
-
+	
+	/**
+	 * save the DB to file
+	 * @exception FileNotFoundException , IOException.
+	 * 
+	 */
 	@Override
 	public void saveHashMap() {
 		try {
@@ -472,6 +498,11 @@ public class MyModel extends Observable implements Model {
 		      notifyObservers("Error");
 		}
 	}
+	
+	/**
+	 * load the DB from File
+	 * @exception FileNotFoundException, ClassNotFoundException, IOException.
+	 */
 	@Override
 	public void loadHashMap() {
 		try {
@@ -493,10 +524,18 @@ public class MyModel extends Observable implements Model {
 		} 
 		
 	}
+	
+	/**
+	 * get the Def Properties
+	 */
 	public Properties getProp(){
 		return properties;
 	}
 	
+	/**
+	 * get the list of all mazes
+	 * @return String listOfMazes
+	 */
 	@Override
 	public String getMazesList() {
 		StringBuilder listOfMazes = new StringBuilder();
@@ -506,6 +545,11 @@ public class MyModel extends Observable implements Model {
 		}
 		return listOfMazes.toString();
 	}
+	
+	
+	/**
+	 * update the Properties From a XML file.
+	 */
 	@Override
 	public void updatexml() {
 	try{

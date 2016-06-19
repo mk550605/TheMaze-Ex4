@@ -10,7 +10,14 @@ import org.eclipse.swt.widgets.Composite;
 
 import Model.algorithms.mazeGenerators.Maze3d;
 import Model.algorithms.mazeGenerators.Position;
-
+/**
+ *  @author Michael Kratik & Tzipi Cabiri
+ * abstract class extends the canvas 
+ * define the maze draw and all the moves on it.
+ * 
+ * 
+ *
+ */
 public abstract class  MazeDisplay extends Canvas {
 	
 	protected abstract void drawMaze(PaintEvent e);
@@ -44,6 +51,9 @@ public abstract class  MazeDisplay extends Canvas {
 	public void setMazeData (int[][] mazeData){
 		this.mazeData =mazeData;
 	}
+	/**
+	 * update the mazedata array when the character go up and down
+	 */
 	public void updateMazeDate(){
 		try {
 			this.mazeData = themaze.getCrossSectionByZ(character.getPos().z);
@@ -62,6 +72,11 @@ public abstract class  MazeDisplay extends Canvas {
 		trophy.setPos(pos);
 	}
 	
+	/**
+	 * CTOR
+	 * @param parent
+	 * @param style
+	 */
 	public MazeDisplay(Composite parent, int style) {
 		super(parent, style);
 		this.addPaintListener(new PaintListener() {
@@ -81,6 +96,9 @@ public abstract class  MazeDisplay extends Canvas {
 				
 			}
 			
+			/**
+			 * keypressed handler
+			 */
 			@Override
 			public void keyPressed(KeyEvent e) {
 				switch (e.keyCode) {

@@ -12,8 +12,17 @@ import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-
+/**
+ * @author Michael Kratik & Tzipi Cabiri
+ * Solve Maze gui window
+ * getting information from user about what maze to solve with what alogo
+ * 
+ *
+ */
 public class SolveMazeWindow extends Dialog {
+	/**
+	 * CTOR
+	 */
 	public SolveMazeWindow(Shell parent) {
 		super(parent);
 		// TODO Auto-generated constructor stub
@@ -33,7 +42,13 @@ public class SolveMazeWindow extends Dialog {
 	}
 
 	
-
+	/**
+	 * init the window 
+	 * define the label and text on screen
+	 * define two buttons of ok and cancel
+	 * Handle the buttons push
+	 * @param listOfMazes- for selecting the maze.
+	 */
 	public void initWidgets(String listOfMazes) {
 		Shell parent = getParent();
 	    Shell popUpShell = new Shell(parent, SWT.DIALOG_TRIM

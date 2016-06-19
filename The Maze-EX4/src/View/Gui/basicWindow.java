@@ -5,14 +5,21 @@ import java.util.Observer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-
+/**
+ *  @author Michael Kratik & Tzipi Cabiri
+ *	basic window of GUI 
+ * 
+ *
+ */
 public abstract class basicWindow extends Observable implements Runnable {
 
 	protected Display display;
 	protected Shell shell;
-//	protected PopUpWindow popUpWindow;
 	
-	
+	/**
+	 * CTOR
+	 * create the display and the shell
+	 */
 	public basicWindow() {
 		this.display = new Display();
 		this.shell = new Shell(display);
@@ -20,6 +27,9 @@ public abstract class basicWindow extends Observable implements Runnable {
 	
 	public abstract void initWidgets();
 	
+	/**
+	 * run the shell of GUI
+	 */
 	@Override
 	public void run() {
 		initWidgets();

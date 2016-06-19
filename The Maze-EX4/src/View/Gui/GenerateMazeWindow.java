@@ -14,7 +14,13 @@ import org.eclipse.swt.widgets.Text;
 
 import Presenter.Properties;
 
-
+/**
+ * @author Michael Kratik & Tzipi Cabiri
+ * Solve Maze gui window
+ * getting information from user about what maze to Generate
+ * 
+ *
+ */
 public class GenerateMazeWindow extends Dialog {
 	private Properties properties;
 	private String name =null;
@@ -33,7 +39,13 @@ public class GenerateMazeWindow extends Dialog {
 	
 //	protected Shell dialog;
 	
-	
+	/**
+	 * init the window 
+	 * define the label and text on screen
+	 * define two buttons of ok and cancel
+	 * Handle the buttons push
+	 * @param Properties - using them for all parameters in cells
+	 */
 	public String initWidgets(Properties prop) {
 		this.properties = prop;
 		Shell parent = getParent();
@@ -142,19 +154,12 @@ public class GenerateMazeWindow extends Dialog {
 	}
 
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 
 	public String getCols() {
 		return cols;
 	}
 
 
-	public void setCols(String cols) {
-		this.cols = cols;
-	}
 
 
 	public String getRows() {
@@ -162,9 +167,6 @@ public class GenerateMazeWindow extends Dialog {
 	}
 
 
-	public void setRows(String rows) {
-		this.rows = rows;
-	}
 
 
 	public String getFloors() {
@@ -172,9 +174,6 @@ public class GenerateMazeWindow extends Dialog {
 	}
 
 
-	public void setFloors(String floors) {
-		this.floors = floors;
-	}
 	
 	
 }

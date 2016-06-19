@@ -5,7 +5,13 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
 import Model.algorithms.mazeGenerators.Position;
-
+/**
+ * 
+ * @author Michael Kratik & Tzipi Cabiri
+ * the Game Trophy class
+ * define the Trophy position and image
+ *
+ */
 public class TrophyImg {
 	private static final String icon = "images/trophy.png";
 	private Position pos;

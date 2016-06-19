@@ -29,7 +29,13 @@ import Presenter.CommandsView.DisplaySolutionMSG;
 import Presenter.CommandsView.hintDisplay;
 import Presenter.CommandsView.updateviewxml;
 import View.View;
-
+/**
+ * 
+ * @author Michael Kratik & Tzipi Cabiri 
+ * @version 1.4
+ *class define all the Presenter work
+ *holding two command hashmap - view commands and model commands.
+ */
 public class Presenter implements Observer {
 	private Model model;
 	private View view;
@@ -41,11 +47,13 @@ public class Presenter implements Observer {
 		this.model= model;
 		this.view =view;
 		buildCommands();
-//		prop = this.model.getProp();
 		view.setProp(model.getProp());
 		view.setlistOfMazes(model.getMazesList());
 	}
-	
+	/**
+	 * buliding all the command Hashmaps 
+	 * 
+	 */
 	private void buildCommands(){
 		modelCommands.put("dir", new dir());
 		modelCommands.put("generate_3d_maze", new generate_3d_maze());
@@ -70,6 +78,10 @@ public class Presenter implements Observer {
 		viewCommands.put("updatenewxml", new updateviewxml());
 		viewCommands.put("hintReady", new hintDisplay());
 	}
+	
+	/**
+	 * Handle commands from observable.
+	 */
 	@Override
 	public void update(Observable o, Object arg) {
 		if (o == model){

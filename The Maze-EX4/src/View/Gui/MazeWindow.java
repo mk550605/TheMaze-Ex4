@@ -23,7 +23,13 @@ import Presenter.Properties;
 import View.View;
 import View.Gui.MazeDisplay.MazeDisplay;
 import View.Gui.MazeDisplay.TwoDMazeDisplay;
-
+/**
+ * @author Michael Kratik & Tzipi Cabiri
+ *  Maze gui main window
+ * define all the main window of the GUI
+ * 
+ *
+ */
 public class MazeWindow extends basicWindow implements View{
 	protected Properties prop ;
 	private MazeDisplay mazeDisplay;
@@ -40,14 +46,20 @@ public class MazeWindow extends basicWindow implements View{
 	private Solution mazeSolution;
 	private String DisplaedMaze;
 	
+	/**
+	 * CTOR
+	 */
 	public MazeWindow() {
 			
 		}
-
+	/**
+	 * Init function of the window 
+	 * define all the buttons groups and behavior.
+	 */
 	@Override
 	public void initWidgets() {
 		
-
+		// listener of the red X . 
 		shell.addListener(SWT.Close, new Listener() {
 			
 			@Override
@@ -101,8 +113,8 @@ public class MazeWindow extends basicWindow implements View{
 				
 			}
 		});
-		
 		// menu ends
+	    
 	    
 		// button and grid for main window
 	    shell.setText("Maze 3D Java Project");
@@ -241,13 +253,19 @@ public class MazeWindow extends basicWindow implements View{
 		
 	}
 	
-	
+	/**
+	 * Exit from Program function 
+	 * notify the presenter and close the window.
+	 */
 	private void exit(){
 		setChanged();
 		notifyObservers("exit");
 		shell.dispose();
 	}
 	
+	/**
+	 * starts the Settings window and notify the observers to load the new XML
+	 */
 	private void uptadeXML(){
 		SettingWindow settingswindow = new SettingWindow(shell);
 		settingswindow.initWidgets(prop);
@@ -257,6 +275,9 @@ public class MazeWindow extends basicWindow implements View{
 		}
 	}
 	
+	/**
+	 * popup a messagebox in sync execution 
+	 */
 	@Override
 	public void displayMessage(String message) {
 		display.syncExec(new Runnable() {
@@ -272,7 +293,10 @@ public class MazeWindow extends basicWindow implements View{
 		
 		
 	}
-
+	
+	/**
+	 * start the main window
+	 */
 	@Override
 	public void start() {
 		this.run();	
@@ -283,6 +307,10 @@ public class MazeWindow extends basicWindow implements View{
 		this.prop = p;
 	}
 
+	/**
+	 * Displaying the maze at his place of the GUI
+	 * @param the maze to display
+	 */
 	@Override
 	public void displayMaze(Maze3d theMaze) {
 		if (mazeDisplay == null){
@@ -305,17 +333,29 @@ public class MazeWindow extends basicWindow implements View{
 		mazeDisplay.redraw();
 	}
 
+	/**
+	 * setter for list of mazes
+	 */
 	@Override
 	public void setlistOfMazes(String listOfMazes) {
 		this.listOfMazes = listOfMazes;
 		
 	}
-
+	
+	/**
+	 * setter for solution of the maze
+	 */
 	@Override
 	public void setSolution(Solution sol) {
 		this.mazeSolution = sol;
 	}
 
+	/**
+	 * hint for the maze solution 
+	 * show the way to the trophy from the current location 
+	 * redraw the character every 500 mili sec.
+	 * 
+	 */
 	@Override
 	public void startHint() {
 		Thread t = new Thread(new Runnable() {
@@ -349,6 +389,11 @@ public class MazeWindow extends basicWindow implements View{
 		t.start();
 	}
 	
+	/**
+	 * transfer from state description to position
+	 * @param State stateDes
+	 * @return
+	 */
 	private Position stateToPos(String stateDes){
 		stateDes = stateDes.replace("{", "");
 		stateDes = stateDes.replace("}","");

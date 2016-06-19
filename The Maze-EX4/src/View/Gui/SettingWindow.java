@@ -16,7 +16,13 @@ import org.eclipse.swt.widgets.Text;
 
 import Presenter.Properties;
 import Presenter.XmlSerializer;
-
+/**
+ * @author Michael Kratik & Tzipi Cabiri
+ * Settings Maze gui window
+ * getting information from user about Def Settings of the program
+ * 
+ *
+ */
 public class SettingWindow extends Dialog {
 	private String[] Algotithem = { "Dfs", "Bestfs", "BreadthFS" };
 	public int ok = 0;
@@ -40,7 +46,13 @@ public class SettingWindow extends Dialog {
 		super(parent);
 		// TODO Auto-generated constructor stub
 	}
-	
+	/**
+	 * @param Properties
+	 * init the window 
+	 * define the label and text on screen
+	 * define two buttons of ok and cancel
+	 * handel the buttons push
+	 */
 	public void initWidgets(Properties prop) {
 		this.properties = prop;
 		Shell parent = getParent();
